@@ -1,0 +1,10 @@
+{
+  "buildCommand": "cd incident-reporting-system && npm run build",
+  "outputDirectory": "incident-reporting-system/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

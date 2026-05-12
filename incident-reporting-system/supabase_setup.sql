@@ -74,6 +74,77 @@ ALTER TABLE incident_files ENABLE ROW LEVEL SECURITY;
 ALTER TABLE incident_versions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE incident_audit_log ENABLE ROW LEVEL SECURITY;
 
+-- Create RLS policies for user_profiles
+CREATE POLICY "Users can view their own profile"
+  ON user_profiles FOR SELECT
+  USING (auth.uid() = id);
+
+CREATE POLICY "Users can update their own profile"
+  ON user_profiles FOR UPDATE
+  USING (auth.uid() = id);
+
+-- Create RLS policies for incidents
+CREATE POLICY "Authenticated users can view incidents"
+  ON incidents FOR SELECT
+  USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Users can create incidents"
+  ON incidents FOR INSERT
+  WITH CHECK (auth.uid() = created_by);
+
+CREATE POLICY "Users can update incidents they created"
+  ON incidents FOR UPDATE
+  USING (auth.uid() = created_by);
+
+-- Create RLS policies for incident_files
+CREATE POLICY "Users can view files from incidents they created"
+  ON incident_files FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM incidents 
+      WHERE incidents.id = incident_files.incident_id 
+      AND incidents.created_by = auth.uid()
+    )
+  );
+
+-- Create RLS policies for incident_versions
+CREATE POLICY "Users can view versions of incidents they created"
+  ON incident_versions FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM incidents 
+      WHERE incidents.id = incident_versions.incident_id 
+      AND incidents.created_by = auth.uid()
+    )
+  );
+
+-- Create RLS policies for audit_log
+CREATE POLICY "Users can view audit logs of incidents they created"
+  ON incident_audit_log FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM incidents 
+      WHERE incidents.id = incident_audit_log.incident_id 
+      AND incidents.created_by = auth.uid()
+    )
+  );
+
+-- Create trigger function to auto-create user_profiles
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.user_profiles (id, email, full_name, role)
+  VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data->>'full_name', 'editor');
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Create trigger to call the function
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
 -- Create storage bucket for incident files
 INSERT INTO storage.buckets (id, name, public) 
 VALUES ('incident-files', 'incident-files', false)

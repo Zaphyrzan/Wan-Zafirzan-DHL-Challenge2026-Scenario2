@@ -1,8 +1,13 @@
 /**
  * Login Form Styles
  * Responsive design with mobile-first approach
- * Comprehensive styling for all form elements
+ * Professional corporate aesthetic
  */
+
+* {
+  /* Reset box-sizing */
+  box-sizing: border-box;
+}
 
 /* Main container for login form */
 .login-form-container {
@@ -20,6 +25,10 @@
   padding: 1rem;
   /* Font family - professional sans-serif */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  /* Margin 0 to remove default body margin */
+  margin: 0;
+  /* Width 100% to ensure full screen */
+  width: 100%;
 }
 
 /* Login form wrapper */

@@ -74,13 +74,15 @@ export function useAuth() {
           });
         }
       } catch (error) {
-        console.error('Error initializing auth:', error);
+        // Silently fail initialization - this is expected when user isn't logged in
+        // Don't show error to user, just proceed to login page
+        console.debug('Auth initialization check:', error);
         setAuthState({
           isAuthenticated: false,
           userId: null,
           userProfile: null,
           isLoading: false,
-          error: 'Failed to initialize authentication',
+          error: null,
         });
       }
     };

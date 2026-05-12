@@ -209,6 +209,12 @@ export function LoginForm() {
       <div className="login-form-wrapper">
         {/* Form header */}
         <div className="login-header">
+          {/* DHL Logo/Branding */}
+          <div style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '1rem', letterSpacing: '2px' }}>
+            <span style={{ color: '#BA0C2F' }}>DHL</span>
+            <span style={{ color: '#FFCD00', marginLeft: '4px' }}>|</span>
+          </div>
+
           {/* Main title */}
           <h1 className="login-title">Sign In</h1>
 

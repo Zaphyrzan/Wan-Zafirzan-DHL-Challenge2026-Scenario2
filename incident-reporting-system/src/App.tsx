@@ -20,13 +20,22 @@ function Dashboard() {
   // JSX render
   return (
     <div className="dashboard">
-      {/* Dashboard header */}
+      {/* Dashboard header with DHL branding */}
       <div className="dashboard-header">
-        {/* Main title */}
-        <h1 className="dashboard-title">DHL Incident Reporting System</h1>
-
-        {/* Subtitle */}
-        <p className="dashboard-subtitle">AI-Enhanced Incident Reporting & Resolution System</p>
+        {/* DHL Logo and branding */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
+          {/* DHL Logo */}
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', letterSpacing: '2px', display: 'flex', alignItems: 'center' }}>
+            <span style={{ color: '#FFCD00' }}>DHL</span>
+          </div>
+          {/* Vertical separator */}
+          <div style={{ width: '2px', height: '2.5rem', backgroundColor: '#FFCD00' }}></div>
+          {/* Title section */}
+          <div>
+            <h1 className="dashboard-title">Incident Reporting System</h1>
+            <p className="dashboard-subtitle">AI-Enhanced Incident Reporting & Resolution System</p>
+          </div>
+        </div>
       </div>
 
       {/* Dashboard content */}

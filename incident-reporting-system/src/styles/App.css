@@ -22,14 +22,21 @@
   /* Padding */
   padding: 2rem;
   
-  /* Background color */
-  background-color: #1e3a5f;
+  /* DHL brand background - Red */
+  background-color: #BA0C2F;
   
   /* Text color */
   color: white;
   
   /* Shadow effect */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  /* Display flex for logo alignment */
+  display: flex;
+  /* Align items vertically */
+  align-items: center;
+  /* Gap between logo and title */
+  gap: 1rem;
 }
 
 .app-header h1 {

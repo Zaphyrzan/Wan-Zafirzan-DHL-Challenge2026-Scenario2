@@ -5,7 +5,7 @@
  * Shows loading state while checking authentication
  */
 
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
 import './AuthGuard.css';

@@ -238,14 +238,14 @@ export function onAuthStateChange(
   callback: (event: string, session: any) => void
 ) {
   // Subscribe to auth state changes
-  const { data: subscription } = supabase.auth.onAuthStateChange(
+  const unsubscribe = supabase.auth.onAuthStateChange(
     (event, session) => {
       callback(event, session);
     }
-  );
+  ).data?.subscription?.unsubscribe;
 
   // Return unsubscribe function
-  return subscription?.unsubscribe;
+  return unsubscribe;
 }
 
 /**

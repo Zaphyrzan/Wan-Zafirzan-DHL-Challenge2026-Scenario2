@@ -7,9 +7,9 @@
 
 import { useState, useRef } from 'react';
 import { useAuthContext } from '../../context/AuthContext';
-import { uploadFile, uploadMultipleFiles, calculateFileHash } from '../../services/fileService';
+import { uploadFile, calculateFileHash } from '../../services/fileService';
 import { createIncident, checkForDuplicate } from '../../services/incidentService';
-import { generateId, handleError } from '../../utils/helpers';
+import { handleError } from '../../utils/helpers';
 import './UploadConsole.css';
 
 /**
@@ -50,7 +50,7 @@ interface IncidentDetails {
  */
 export function UploadConsole() {
   // Get current user from auth context
-  const { userId, userProfile } = useAuthContext();
+  const { userId } = useAuthContext();
 
   // Reference to hidden file input
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -370,7 +370,7 @@ export function UploadConsole() {
             }
 
             // Upload file to storage
-            const fileUrl = await uploadFile(uploadedFile.file, incident.id);
+            await uploadFile(uploadedFile.file, incident.id);
 
             // Update file status to success
             setSelectedFiles(prev => {

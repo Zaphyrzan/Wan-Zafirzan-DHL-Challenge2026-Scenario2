@@ -160,38 +160,6 @@ export function useAuth() {
   };
 
   /**
-   * Sign up new user
-   * @param email - User email
-   * @param password - User password
-   * @param fullName - User's full name
-   */
-  const signup = async (email: string, password: string, fullName: string) => {
-    try {
-      setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
-
-      // Call sign up service
-      const result = await authService.signUp(email, password, fullName);
-
-      // Don't set authenticated yet - wait for email confirmation
-      setAuthState((prev) => ({
-        ...prev,
-        isLoading: false,
-        error: null,
-      }));
-
-      return result;
-    } catch (error: any) {
-      console.error('Signup error:', error);
-      setAuthState((prev) => ({
-        ...prev,
-        isLoading: false,
-        error: error.message || 'Failed to sign up',
-      }));
-      throw error;
-    }
-  };
-
-  /**
    * Sign out current user
    */
   const logout = async () => {
@@ -234,7 +202,6 @@ export function useAuth() {
   return {
     ...authState,
     login,
-    signup,
     logout,
     hasRole,
   };

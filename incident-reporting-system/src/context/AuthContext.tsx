@@ -4,7 +4,8 @@
  * Wraps the app in a provider to make auth state available everywhere
  */
 
-import { createContext, ReactNode, useContext } from 'react';
+import { createContext, useContext } from 'react';
+import type { ReactNode } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import type { UserProfile } from '../types';
 
@@ -19,7 +20,6 @@ interface AuthContextType {
   
   // Authentication methods
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, fullName: string) => Promise<void>;
   logout: () => Promise<void>;
   hasRole: (role: UserProfile['role']) => Promise<boolean>;
 }

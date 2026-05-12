@@ -8,7 +8,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
-import { isValidEmail, validatePassword, handleError } from '../../utils/helpers';
+import { isValidEmail, handleError } from '../../utils/helpers';
 import './LoginForm.css';
 
 /**

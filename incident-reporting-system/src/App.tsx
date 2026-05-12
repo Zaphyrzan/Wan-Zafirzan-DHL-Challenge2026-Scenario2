@@ -9,6 +9,7 @@ import { AuthProvider } from './context/AuthContext';
 import { LoginForm } from './components/Auth/LoginForm';
 import { AuthGuard } from './components/Auth/AuthGuard';
 import { UploadConsole } from './components/UploadConsole/UploadConsole';
+import { IncidentViewer } from './components/Dashboard/IncidentViewer';
 import './styles/App.css';
 
 /**
@@ -46,13 +47,10 @@ function Dashboard() {
           <UploadConsole />
         </div>
 
-        {/* Incident viewer section - will be added later */}
+        {/* Incident viewer section */}
         <div className="incidents-section">
-          {/* Placeholder for incident viewer */}
-          <div className="placeholder">
-            <h2>Incident Viewer</h2>
-            <p>Searchable and filterable incident list coming soon...</p>
-          </div>
+          {/* Incident viewer component */}
+          <IncidentViewer />
         </div>
       </div>
     </div>

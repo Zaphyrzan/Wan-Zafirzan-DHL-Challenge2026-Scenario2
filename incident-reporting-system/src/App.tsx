@@ -10,6 +10,7 @@ import { LoginForm } from './components/Auth/LoginForm';
 import { AuthGuard } from './components/Auth/AuthGuard';
 import { UploadConsole } from './components/UploadConsole/UploadConsole';
 import { IncidentViewer } from './components/Dashboard/IncidentViewer';
+import { useAuthContext } from './context/AuthContext';
 import './styles/App.css';
 
 /**
@@ -18,6 +19,15 @@ import './styles/App.css';
  * Contains upload console and incident viewer
  */
 function Dashboard() {
+  // Get auth context for logout
+  const { logout } = useAuthContext();
+
+  // Handle logout
+  const handleLogout = async () => {
+    await logout();
+    // Redirect to login happens automatically via AuthGuard
+  };
+
   // JSX render
   return (
     <div className="dashboard">
@@ -37,6 +47,15 @@ function Dashboard() {
             <p className="dashboard-subtitle">AI-Enhanced Incident Reporting & Resolution System</p>
           </div>
         </div>
+
+        {/* Logout button */}
+        <button 
+          onClick={handleLogout}
+          className="logout-btn"
+          title="Sign out"
+        >
+          Sign Out
+        </button>
       </div>
 
       {/* Dashboard content */}

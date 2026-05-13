@@ -3,12 +3,21 @@
  * Global styles for the application layout
  */
 
+/* Universal box-sizing */
+* {
+  box-sizing: border-box;
+}
+
 /* Root element styles */
 .app {
   /* Full height of viewport */
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
   
   /* Background color */
   background-color: #f8f9fa;
@@ -227,22 +236,37 @@
   flex-direction: column;
   /* Min height full viewport */
   min-height: 100vh;
+  /* Full width */
+  width: 100%;
+  /* No margin/padding */
+  margin: 0;
+  padding: 0;
   /* Background color */
   background-color: #f8f9fa;
 }
 
 /* Dashboard header */
 .dashboard-header {
+  /* Display flex for logo + logout */
+  display: flex;
+  /* Justify content space-between */
+  justify-content: space-between;
+  /* Align items center */
+  align-items: center;
   /* Padding */
   padding: 2rem;
-  /* Background color dark blue */
-  background-color: #1e3a5f;
+  /* DHL Red background */
+  background-color: #BA0C2F;
   /* Text color white */
   color: white;
   /* Box shadow */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Full width */
+  width: 100%;
+  /* Margin 0 */
+  margin: 0;
   /* Border bottom accent */
-  border-bottom: 3px solid #667eea;
+  border-bottom: 3px solid #FFCD00;
 }
 
 /* Dashboard title */
@@ -265,10 +289,58 @@
   font-size: 0.95rem;
 }
 
+/* Logout button */
+.logout-btn {
+  /* Padding */
+  padding: 0.65rem 1.5rem;
+  /* Background color yellow */
+  background-color: #FFCD00;
+  /* Text color */
+  color: #333;
+  /* Border */
+  border: none;
+  /* Border radius */
+  border-radius: 2px;
+  /* Font size */
+  font-size: 0.95rem;
+  /* Font weight */
+  font-weight: 600;
+  /* Cursor pointer */
+  cursor: pointer;
+  /* Transition */
+  transition: all 0.2s ease;
+}
+
+/* Logout button hover */
+.logout-btn:hover {
+  /* Background color darker yellow */
+  background-color: #FFB81C;
+  /* Subtle shadow */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Logout button active */
+.logout-btn:active {
+  /* Transform down */
+  transform: translateY(1px);
+}
+
 /* Dashboard content wrapper */
 .dashboard-content {
+  /* Display grid */
+  display: grid;
+  /* Grid template columns - 50/50 split */
+  grid-template-columns: 1fr 1fr;
+  /* Gap between columns */
+  gap: 2rem;
   /* Flex grow to fill space */
   flex: 1;
+  /* Full width */
+  width: 100%;
+  /* Margin 0 padding */
+  margin: 0;
+  /* Padding */
+  padding: 2rem;
   /* Padding */
   padding: 2rem;
   /* Max width container */

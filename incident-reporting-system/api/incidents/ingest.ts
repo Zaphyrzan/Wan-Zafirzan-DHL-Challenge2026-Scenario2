@@ -36,20 +36,31 @@ export default async function handler(
   req: VercelRequest,
   res: VercelResponse<RpaIncidentResponse>
 ): Promise<void> {
-  // Only allow POST requests
-  if (req.method !== 'POST') {
-    res.status(405).json({
-      success: false,
-      message: 'Method not allowed',
-      error: 'Only POST requests are supported',
-    });
-    return;
-  }
-
   try {
+    // Set CORS headers for preflight requests
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-api-key');
+
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+      res.status(200).end();
+      return;
+    }
+
+    // Only allow POST requests
+    if (req.method !== 'POST') {
+      res.status(405).json({
+        success: false,
+        message: 'Method not allowed',
+        error: 'Only POST requests are supported',
+      });
+      return;
+    }
+
     // Validate API key (simple token-based auth for RPA)
     const apiKey = req.headers['x-api-key'] as string;
-    const expectedKey = process.env.UIPATH_API_KEY || 'default-api-key';
+    const expectedKey = process.env.UIPATH_API_KEY || 'uipath-secret-key-12345';
 
     if (!apiKey || apiKey !== expectedKey) {
       res.status(401).json({

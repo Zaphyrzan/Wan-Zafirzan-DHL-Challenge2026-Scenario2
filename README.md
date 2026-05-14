@@ -1,46 +1,229 @@
-# DHL Incident Reporting & Resolution System — Integrated Web App + RPA Automation
+# DHL Incident Reporting System
 
-**Student:** Wan Zafirzan Bin Wan Tarmizan  
-**Matric Number:** A22MJ8003  
-**Course:** SECJ 3483 – WEB TECHNOLOGY  
-**Submission Date:** 15 May 2026  
-**Project Weight:** 60% Web Application + 40% RPA Automation
+Wan Zafirzan (A22MJ8003) - SECJ 3483: Web Technology
+
+**Live:** https://wan-zafirzan-dhl-challenge2026-scen.vercel.app
 
 ---
 
-## TABLE OF CONTENTS
+## What's This Project?
 
-1. [Introduction & Scenario Description](#introduction--scenario-description)
-2. [System Architecture](#system-architecture)
-3. [Technology Stack](#technology-stack)
-4. [API & JSON Structure](#api--json-structure)
-5. [Web Application Features](#web-application-features)
-6. [User Interface Screenshots](#user-interface-screenshots)
-7. [RPA Workflow & Automation](#rpa-workflow--automation)
-8. [Implementation & Testing](#implementation--testing)
-9. [Results & Achievements](#results--achievements)
-10. [Known Limitations & Future Work](#known-limitations--future-work)
+DHL support teams get incident reports from everywhere - emails, Google Drive, chat, phone notes. Problem is, this data is messy and scattered. Information gets lost, wrong people get assigned, and priorities are unclear.
 
----
+I built a system that:
+- Automatically grabs incidents from email (using UiPath)
+- Automatically grabs incidents from Google Drive (using UiPath + OAuth2)
+- Puts everything in one dashboard
+- Auto-detects priority levels and tags departments
+- Stores everything securely in Supabase
 
-## DEPLOYMENT INFORMATION
-
-**Live Application:** https://wan-zafirzan-dhl-challenge2026-scen.vercel.app
-
-**GitHub Repository:** https://github.com/Zaphyrzan/Wan-Zafirzan-DHL-Challenge2026-Scenario2
-
-**Test Credentials:**
-- Email: test@dhl.com
-- Password: SecurePassword123!
-
-**API Documentation:**
-- Base URL: https://wan-zafirzan-dhl-challenge2026-scen.vercel.app/api/incidents
-- Method: POST
-- Auth: x-api-key: uipath-secret-key-12345
+**60% of the grade is the web app (React dashboard), 40% is the RPA automation (UiPath workflows).**
 
 ---
 
-## 1. INTRODUCTION & SCENARIO DESCRIPTION
+## Quick Demo
+
+### 1. Web App - The Dashboard
+- Login with `test@dhl.com`
+- See all incidents in one place
+- Search by keywords, filter by priority/status
+- Click on incidents to see details and attached files
+- Upload files manually if needed
+
+### 2. UiPath Automation
+- **Email Connector:** Monitors Outlook inbox → sends incidents to API
+- **Google Drive Connector:** Scans a Google Drive folder → sends incidents to API
+- Both run automatically and create incidents with correct priority
+
+---
+
+## Tech Stack
+
+**Frontend:**
+- React 18 + TypeScript (type-safe)
+- React Router for navigation
+- Vite for fast builds
+
+**Backend:**
+- Serverless functions on Vercel (no server to maintain)
+- Plain JavaScript + native fetch (no heavy dependencies)
+
+**Database:**
+- Supabase PostgreSQL (managed)
+- Row-level security policies (RLS) for data protection
+- Storage bucket for file attachments
+
+**Automation:**
+- UiPath Studio (RPA)
+- Google Drive API v3 (OAuth2 authentication)
+- HTTP POST to our API
+
+---
+
+## API Endpoint
+
+**POST** `/api/incidents`
+
+```json
+{
+  "title": "Address change missed - wrong delivery",
+  "description": "Customer requested address change but system didn't apply it",
+  "priority": "critical",
+  "tags": ["logistics", "urgent"],
+  "source": "uipath-email"
+}
+```
+
+Returns:
+```json
+{
+  "success": true,
+  "incident_id": "24cbc4a8-e5ae-454c-b22d-8f740ea80bf4"
+}
+```
+
+---
+
+## How the System Works
+
+```
+Email or Google Drive files
+        ↓
+    UiPath reads them
+        ↓
+  Smart priority detection (URGENT → critical, etc)
+        ↓
+    HTTP POST to API
+        ↓
+  Supabase stores the incident
+        ↓
+  React dashboard shows it
+```
+
+---
+
+## Key Features
+
+**Automatic Priority Detection:**
+- "URGENT" in email → marked as critical
+- "ASAP" → high priority
+- Everything else → medium or low
+
+**Auto-Tagging:**
+- Email incidents get tagged as "email"
+- Google Drive incidents get tagged as "google-drive"
+- Department tags added based on keywords (logistics, billing, etc)
+
+**File Management:**
+- Upload files when creating incidents
+- Duplicate detection (same file won't be uploaded twice)
+- Inline preview for images and PDFs
+- Download files with secure URLs
+
+**Professional Dashboard:**
+- DHL brand colors (red, yellow)
+- Search across all incidents
+- Filter by 2 criteria simultaneously
+- Sort by 4 different fields
+
+---
+
+## What Actually Works
+
+I tested both automation pipelines:
+
+1. **Email Test (May 14, 22:30:04)**
+   - Sent email with subject "DHL Incident - Test URGENT"
+   - UiPath detected it as critical
+   - Created incident: `4e122f38-a322-4c7b-bc3a-e0ff68f0a368`
+   - Showed up in dashboard with correct priority
+
+2. **Google Drive Test (May 15, 00:20:04)**
+   - Uploaded 3 real incident documents to Google Drive
+   - UiPath scanned folder
+   - Found 5 files
+   - Created incident: `24cbc4a8-e5ae-454c-b22d-8f740ea80bf4`
+   - Showed up in dashboard
+
+Both are live in the production database right now.
+
+---
+
+## Issues I Had to Fix
+
+| Problem | How I Fixed It |
+|---------|---|
+| API routes were being intercepted by React | Changed Vercel routing to exclude `/api/*` paths |
+| OAuth2 token expiration | Can refresh tokens manually via Google OAuth Playground |
+| Variable initialization errors in UiPath | Used proper Assign activities instead of invalid XML patterns |
+| Supabase connection issues | Switched to REST API instead of SDK (no dependencies needed) |
+| ManualTrigger validation errors | Removed triggers from Phase 3 workflow |
+
+---
+
+## File Structure
+
+```
+├── incident-reporting-system/          (React app)
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── LoginForm.tsx
+│   │   │   ├── AdminDashboard.tsx
+│   │   │   ├── IncidentViewer.tsx
+│   │   │   └── UploadConsole.tsx
+│   │   ├── services/
+│   │   │   ├── incidentService.ts
+│   │   │   └── fileService.ts
+│   │   └── App.tsx
+│   └── dist/                          (Built files)
+│
+├── api/
+│   └── incidents.js                   (Vercel serverless function)
+│
+├── supabase_setup.sql                 (Database schema)
+├── vercel.json                        (Deployment config)
+└── README.md                          (This file)
+```
+
+---
+
+## Running It Locally
+
+**Frontend:**
+```bash
+cd incident-reporting-system
+npm install
+npm run dev
+```
+
+**Testing the API:**
+```bash
+curl -X POST https://wan-zafirzan-dhl-challenge2026-scen.vercel.app/api/incidents \
+  -H "x-api-key: uipath-secret-key-12345" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Test","description":"Test incident","priority":"high"}'
+```
+
+---
+
+## Future Ideas
+
+- WhatsApp bot for incident submission
+- Teams integration for chat-based reporting
+- Machine learning to auto-categorize incidents
+- Mobile app for on-the-go incident tracking
+- Real-time alerts for critical incidents
+
+---
+
+## Test Account
+
+Email: `test@dhl.com`  
+Password: anything works (Supabase test account)
+
+---
+
+That's it. System's working, tested both pipelines, and everything is deployed and live.
 
 ### Problem Statement
 

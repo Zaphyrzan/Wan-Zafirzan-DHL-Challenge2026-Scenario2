@@ -219,7 +219,7 @@ curl -X POST https://wan-zafirzan-dhl-challenge2026-scen.vercel.app/api/incident
 ## Test Account
 
 Email: `test@dhl.com`  
-Password: anything works (Supabase test account)
+Password: SecurePassword123!
 
 ---
 

@@ -1,0 +1,240 @@
+/**
+ * Navigation Bar Styles
+ */
+
+/* Navigation bar */
+.navigation-bar {
+  /* Display flex */
+  display: flex;
+  /* Justify content space-between */
+  justify-content: space-between;
+  /* Align items center */
+  align-items: center;
+  /* Padding */
+  padding: 1rem 2rem;
+  /* Background color DHL Red */
+  background-color: #BA0C2F;
+  /* Text color white */
+  color: white;
+  /* Box shadow */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  /* Width 100% */
+  width: 100%;
+  /* Box sizing */
+  box-sizing: border-box;
+  /* Margin 0 */
+  margin: 0;
+}
+
+/* Nav branding */
+.nav-branding {
+  /* Display flex */
+  display: flex;
+  /* Align items center */
+  align-items: center;
+  /* Gap */
+  gap: 1rem;
+  /* Flex 1 */
+  flex: 1;
+}
+
+/* Logo */
+.nav-logo {
+  /* Display flex */
+  display: flex;
+  /* Align items center */
+  align-items: center;
+  /* Gap */
+  gap: 0.75rem;
+  /* Font size */
+  font-size: 1.5rem;
+  /* Font weight */
+  font-weight: bold;
+  /* Letter spacing */
+  letter-spacing: 2px;
+}
+
+/* Logo text */
+.logo-text {
+  /* Color yellow */
+  color: #FFCD00;
+  /* Font weight */
+  font-weight: 700;
+  /* Font size */
+  font-size: 1.8rem;
+}
+
+/* Logo separator */
+.logo-separator {
+  /* Width and height */
+  width: 2px;
+  height: 2rem;
+  /* Background color yellow */
+  background-color: #FFCD00;
+  /* Border radius */
+  border-radius: 1px;
+}
+
+/* Nav title */
+.nav-title {
+  /* Margin */
+  margin: 0;
+  /* Font size */
+  font-size: 1.3rem;
+  /* Font weight */
+  font-weight: 600;
+  /* Color white */
+  color: white;
+  /* Letter spacing */
+  letter-spacing: 0.5px;
+}
+
+/* Nav links */
+.nav-links {
+  /* Display flex */
+  display: flex;
+  /* List style none */
+  list-style: none;
+  /* Margin 0 padding 0 */
+  margin: 0;
+  padding: 0;
+  /* Gap */
+  gap: 0.5rem;
+}
+
+/* Nav link item */
+.nav-links li {
+  /* Display inline */
+  display: inline;
+}
+
+/* Nav link button */
+.nav-link {
+  /* Padding */
+  padding: 0.65rem 1.2rem;
+  /* Background color transparent */
+  background-color: transparent;
+  /* Color white */
+  color: white;
+  /* Border */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  /* Border radius */
+  border-radius: 2px;
+  /* Font size */
+  font-size: 0.95rem;
+  /* Font weight */
+  font-weight: 500;
+  /* Cursor pointer */
+  cursor: pointer;
+  /* Transition */
+  transition: all 0.2s ease;
+  /* Font family inherit */
+  font-family: inherit;
+}
+
+/* Nav link hover */
+.nav-link:hover {
+  /* Background color yellow */
+  background-color: #FFCD00;
+  /* Color dark */
+  color: #333;
+  /* Border color yellow */
+  border-color: #FFCD00;
+  /* Box shadow */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Nav link active */
+.nav-link:active {
+  /* Transform */
+  transform: translateY(1px);
+}
+
+/* Nav logout button */
+.nav-logout-btn {
+  /* Padding */
+  padding: 0.65rem 1.5rem;
+  /* Background color yellow */
+  background-color: #FFCD00;
+  /* Color dark */
+  color: #333;
+  /* Border none */
+  border: none;
+  /* Border radius */
+  border-radius: 2px;
+  /* Font size */
+  font-size: 0.95rem;
+  /* Font weight */
+  font-weight: 600;
+  /* Cursor pointer */
+  cursor: pointer;
+  /* Transition */
+  transition: all 0.2s ease;
+  /* Font family inherit */
+  font-family: inherit;
+  /* Flex shrink 0 */
+  flex-shrink: 0;
+}
+
+/* Nav logout button hover */
+.nav-logout-btn:hover {
+  /* Background color darker yellow */
+  background-color: #FFB81C;
+  /* Box shadow */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Nav logout button active */
+.nav-logout-btn:active {
+  /* Transform */
+  transform: translateY(1px);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  /* Navigation bar */
+  .navigation-bar {
+    /* Flex direction column */
+    flex-direction: column;
+    /* Align items flex-start */
+    align-items: flex-start;
+    /* Gap */
+    gap: 1rem;
+    /* Padding */
+    padding: 1rem;
+  }
+
+  /* Nav branding */
+  .nav-branding {
+    /* Width 100% */
+    width: 100%;
+  }
+
+  /* Nav title */
+  .nav-title {
+    /* Font size */
+    font-size: 1.1rem;
+  }
+
+  /* Nav links */
+  .nav-links {
+    /* Width 100% */
+    width: 100%;
+    /* Flex wrap */
+    flex-wrap: wrap;
+  }
+
+  /* Nav link button */
+  .nav-link {
+    /* Flex 1 */
+    flex: 1;
+    /* Min width */
+    min-width: 120px;
+  }
+
+  /* Nav logout button */
+  .nav-logout-btn {
+    /* Width 100% */
+    width: 100%;
+  }
+}

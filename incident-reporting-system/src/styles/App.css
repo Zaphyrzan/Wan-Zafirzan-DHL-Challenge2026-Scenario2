@@ -507,6 +507,37 @@
   }
 }
 
+/* Protected layout wrapper */
+.protected-layout {
+  /* Display flex */
+  display: flex;
+  /* Flex direction column */
+  flex-direction: column;
+  /* Full height */
+  min-height: 100vh;
+  /* Full width */
+  width: 100%;
+  /* No margins/padding */
+  margin: 0;
+  padding: 0;
+  /* Background color */
+  background-color: #f8f9fa;
+}
+
+/* Protected content area */
+.protected-content {
+  /* Display flex */
+  display: flex;
+  /* Flex direction column */
+  flex-direction: column;
+  /* Fill available space */
+  flex: 1;
+  /* Full width */
+  width: 100%;
+  /* Overflow hidden */
+  overflow-y: auto;
+}
+
 /* Mobile responsive */
 @media (max-width: 480px) {
   /* Dashboard header */

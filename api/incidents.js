@@ -39,72 +39,85 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Server configuration error' });
     }
 
-    // Import Supabase dynamically
-    const { createClient } = await import('@supabase/supabase-js');
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    // Use Supabase REST API directly via fetch (no SDK needed)
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${supabaseKey}`,
+      'apikey': supabaseKey,
+    };
 
-    // Get or create RPA user
+    // Step 1: Get or create RPA user
     const rpaEmail = 'rpa@dhl-incident-system.internal';
+
+    const selectRes = await fetch(
+      `${supabaseUrl}/rest/v1/user_profiles?email=eq.${encodeURIComponent(rpaEmail)}&select=id`,
+      { headers, method: 'GET' }
+    );
+
+    const existingUsers = await selectRes.json();
     let userId;
 
-    // Check if RPA user exists
-    const { data: existingUser, error: selectError } = await supabase
-      .from('user_profiles')
-      .select('id')
-      .eq('email', rpaEmail)
-      .maybeSingle();
-
-    if (selectError && selectError.code !== 'PGRST116') {
-      console.error('Error checking RPA user:', selectError);
-      throw selectError;
-    }
-
-    if (existingUser) {
-      userId = existingUser.id;
+    if (Array.isArray(existingUsers) && existingUsers.length > 0) {
+      userId = existingUsers[0].id;
     } else {
       // Create RPA user
-      const { data: newUser, error: createError } = await supabase
-        .from('user_profiles')
-        .insert({
+      const createRes = await fetch(`${supabaseUrl}/rest/v1/user_profiles`, {
+        headers,
+        method: 'POST',
+        body: JSON.stringify({
           email: rpaEmail,
           full_name: 'UiPath RPA System',
           role: 'system',
-        })
-        .select('id')
-        .single();
+        }),
+      });
 
-      if (createError) {
-        console.error('Error creating RPA user:', createError);
-        throw createError;
+      if (!createRes.ok) {
+        const err = await createRes.json();
+        console.error('Error creating RPA user:', err);
+        throw new Error(`Failed to create RPA user: ${err.message}`);
       }
 
-      userId = newUser.id;
+      const newUser = await createRes.json();
+      userId = newUser[0]?.id;
+
+      if (!userId) {
+        throw new Error('Failed to get new user ID');
+      }
     }
 
-    // Create incident
-    const { data: incident, error: incidentError } = await supabase
-      .from('incidents')
-      .insert({
+    // Step 2: Create incident
+    const incidentRes = await fetch(`${supabaseUrl}/rest/v1/incidents`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({
         title: title.trim(),
         description: description || '',
         priority: priority || 'medium',
         status: 'submitted',
         tags: tags || [],
         created_by: userId,
-      })
-      .select('id')
-      .single();
+      }),
+    });
 
-    if (incidentError) {
-      console.error('Error creating incident:', incidentError);
-      throw incidentError;
+    if (!incidentRes.ok) {
+      const err = await incidentRes.json();
+      console.error('Error creating incident:', err);
+      throw new Error(`Failed to create incident: ${err.message}`);
     }
 
-    // Log to audit
-    const { error: auditError } = await supabase
-      .from('incident_audit_log')
-      .insert({
-        incident_id: incident.id,
+    const incident = await incidentRes.json();
+    const incidentId = incident[0]?.id;
+
+    if (!incidentId) {
+      throw new Error('Failed to get incident ID');
+    }
+
+    // Step 3: Log to audit (non-critical, don't fail if this errors)
+    fetch(`${supabaseUrl}/rest/v1/incident_audit_log`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({
+        incident_id: incidentId,
         action: 'created_via_rpa',
         actor_id: userId,
         details: {
@@ -112,16 +125,13 @@ export default async function handler(req, res) {
           external_id: external_id,
           timestamp: new Date().toISOString(),
         },
-      });
-
-    if (auditError) {
-      console.error('Audit log error (non-critical):', auditError);
-    }
+      }),
+    }).catch(err => console.error('Audit log error (non-critical):', err));
 
     // Success response
     return res.status(201).json({
       success: true,
-      incident_id: incident.id,
+      incident_id: incidentId,
       message: 'Incident created successfully',
     });
   } catch (error) {

@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { getIncidents } from '../../services/incidentService';
+import { listIncidentFiles, generateSignedUrl } from '../../services/fileService';
 import '../Dashboard/IncidentViewer.css';
 import './AdminDashboard.css';
 
@@ -24,6 +25,16 @@ interface IncidentItem {
 }
 
 /**
+ * File item interface
+ */
+interface FileItem {
+  name: string;
+  id: string;
+  updated_at: string;
+  metadata?: any;
+}
+
+/**
  * Admin Dashboard Component
  */
 export function AdminDashboard() {
@@ -34,6 +45,8 @@ export function AdminDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [selectedIncident, setSelectedIncident] = useState<IncidentItem | null>(null);
+  const [incidentFiles, setIncidentFiles] = useState<FileItem[]>([]);
+  const [filesLoading, setFilesLoading] = useState(false);
 
   // Fetch incidents on mount
   useEffect(() => {
@@ -85,9 +98,201 @@ export function AdminDashboard() {
     }
   };
 
+  // Fetch files when incident is selected
+  useEffect(() => {
+    if (selectedIncident) {
+      fetchIncidentFiles(selectedIncident.id);
+    } else {
+      setIncidentFiles([]);
+    }
+  }, [selectedIncident]);
+
   /**
-   * Get filtered incidents based on priority
+   * Fetch files for an incident
    */
+  const fetchIncidentFiles = async (incidentId: string) => {
+    try {
+      setFilesLoading(true);
+      const files = await listIncidentFiles(incidentId);
+      setIncidentFiles(files || []);
+    } catch (err: any) {
+      console.error('Error fetching files:', err);
+      setIncidentFiles([]);
+    } finally {
+      setFilesLoading(false);
+    }
+  };
+
+  /**
+   * Handle file download
+   */
+  const handleFileDownload = async (fileName: string) => {
+    try {
+      if (!selectedIncident) return;
+      
+      const filePath = `incidents/${selectedIncident.id}/${fileName}`;
+      const url = await generateSignedUrl(filePath, 3600);
+      
+      // Open file in new tab
+      window.open(url, '_blank');
+    } catch (err: any) {
+      console.error('Error downloading file:', err);
+      alert('Failed to download file');
+    }
+  };
+
+  /**
+   * Get file extension
+   */
+  const getFileExtension = (fileName: string): string => {
+    return fileName.split('.').pop()?.toLowerCase() || '';
+  };
+
+  /**
+   * Check if file is image
+   */
+  const isImage = (fileName: string): boolean => {
+    const ext = getFileExtension(fileName);
+    return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
+  };
+
+  /**
+   * Check if file is PDF
+   */
+  const isPdf = (fileName: string): boolean => {
+    return getFileExtension(fileName) === 'pdf';
+  };
+
+  /**
+   * Get file type icon
+   */
+  const getFileTypeIcon = (fileName: string): string => {
+    const ext = getFileExtension(fileName);
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return '🖼️';
+    if (ext === 'pdf') return '📄';
+    if (['doc', 'docx'].includes(ext)) return '📝';
+    if (['xls', 'xlsx'].includes(ext)) return '📊';
+    if (ext === 'txt') return '📋';
+    return '📎';
+  };
+
+  /**
+   * Get preview URL for file
+   */
+  const getPreviewUrl = async (fileName: string): Promise<string | null> => {
+    try {
+      if (!selectedIncident) return null;
+      
+      const filePath = `incidents/${selectedIncident.id}/${fileName}`;
+      const url = await generateSignedUrl(filePath, 3600);
+      return url;
+    } catch (err: any) {
+      console.error('Error getting preview URL:', err);
+      return null;
+    }
+  };
+
+  /**
+   * Get modal content styles for PDF
+   */
+  const PdfPreviewModal = ({ fileName }: { fileName: string }) => {
+    const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+    
+    useEffect(() => {
+      getPreviewUrl(fileName).then(setPdfUrl);
+    }, [fileName]);
+
+    if (!pdfUrl) return <p>Loading PDF...</p>;
+
+    return (
+      <iframe
+        src={pdfUrl}
+        style={{
+          width: '100%',
+          height: '500px',
+          border: 'none',
+          borderRadius: '4px'
+        }}
+        title="PDF Preview"
+      />
+    );
+  };
+
+  /**
+   * Get modal content styles for image
+   */
+  const ImagePreviewModal = ({ fileName }: { fileName: string }) => {
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
+    
+    useEffect(() => {
+      getPreviewUrl(fileName).then(setImageUrl);
+    }, [fileName]);
+
+    if (!imageUrl) return <p>Loading image...</p>;
+
+    return (
+      <img
+        src={imageUrl}
+        alt={fileName}
+        style={{
+          width: '100%',
+          maxHeight: '500px',
+          objectFit: 'contain',
+          borderRadius: '4px'
+        }}
+      />
+    );
+  };
+
+  /**
+   * File preview modal state
+   */
+  const [previewFile, setPreviewFile] = useState<string | null>(null);
+
+  /**
+   * Render file preview modal
+   */
+  const renderFilePreview = () => {
+    if (!previewFile) return null;
+
+    const isImageFile = isImage(previewFile);
+    const isPdfFile = isPdf(previewFile);
+
+    return (
+      <div 
+        className="file-preview-modal"
+        onClick={() => setPreviewFile(null)}
+      >
+        <div
+          className="file-preview-content"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            className="modal-close-btn"
+            onClick={() => setPreviewFile(null)}
+          >
+            ×
+          </button>
+
+          <div className="file-preview-body">
+            {isImageFile && <ImagePreviewModal fileName={previewFile} />}
+            {isPdfFile && <PdfPreviewModal fileName={previewFile} />}
+            {!isImageFile && !isPdfFile && (
+              <div style={{ padding: '2rem', textAlign: 'center' }}>
+                <p>Preview not available for this file type</p>
+                <button
+                  className="file-download-btn"
+                  onClick={() => handleFileDownload(previewFile)}
+                >
+                  Download File
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
   const getFilteredIncidents = (): IncidentItem[] => {
     if (priorityFilter === 'all') return allIncidents;
 
@@ -201,7 +406,7 @@ export function AdminDashboard() {
       {/* All incidents section with filters */}
       <div className="all-incidents-section">
         <div className="section-header">
-          <h2>📋 All Incidents</h2>
+          <h2>All Incidents</h2>
           <span className="incident-count">{getFilteredIncidents().length} incidents</span>
         </div>
 
@@ -346,10 +551,55 @@ export function AdminDashboard() {
                   </div>
                 </div>
               </div>
+
+              {/* Files section */}
+              <div className="modal-section">
+                <h3>Attachments</h3>
+                {filesLoading ? (
+                  <p>Loading files...</p>
+                ) : incidentFiles.length === 0 ? (
+                  <p style={{ color: '#999' }}>No files attached</p>
+                ) : (
+                  <div className="files-list">
+                    {incidentFiles.map((file) => (
+                      <div key={file.id} className="file-item">
+                        <span className="file-icon">{getFileTypeIcon(file.name)}</span>
+                        <div className="file-info">
+                          <p className="file-name">{file.name}</p>
+                          <p className="file-meta">
+                            Updated: {new Date(file.updated_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div className="file-actions">
+                          {(isImage(file.name) || isPdf(file.name)) && (
+                            <button
+                              className="file-preview-btn"
+                              onClick={() => setPreviewFile(file.name)}
+                              title="Preview file"
+                            >
+                              Preview
+                            </button>
+                          )}
+                          <button
+                            className="file-download-btn"
+                            onClick={() => handleFileDownload(file.name)}
+                            title="Download file"
+                          >
+                            Download
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
       )}
+
+      {/* File preview modal */}
+      {renderFilePreview()}
     </div>
   );
 }

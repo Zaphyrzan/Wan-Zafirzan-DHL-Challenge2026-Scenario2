@@ -807,3 +807,194 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Files list */
+.files-list {
+  /* Display flex */
+  display: flex;
+  /* Flex direction column */
+  flex-direction: column;
+  /* Gap */
+  gap: 0.75rem;
+}
+
+/* File item */
+.file-item {
+  /* Display flex */
+  display: flex;
+  /* Align items center */
+  align-items: center;
+  /* Gap */
+  gap: 1rem;
+  /* Padding */
+  padding: 0.75rem;
+  /* Background color */
+  background-color: #F9FAFB;
+  /* Border */
+  border: 1px solid #E5E7EB;
+  /* Border radius */
+  border-radius: 4px;
+  /* Transition */
+  transition: all 0.2s ease;
+}
+
+/* File item hover */
+.file-item:hover {
+  /* Background color */
+  background-color: #F3F4F6;
+  /* Border color */
+  border-color: #BA0C2F;
+  /* Box shadow */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* File icon */
+.file-icon {
+  /* Font size */
+  font-size: 1.5rem;
+  /* Flex shrink 0 */
+  flex-shrink: 0;
+}
+
+/* File info */
+.file-info {
+  /* Display flex */
+  display: flex;
+  /* Flex direction column */
+  flex-direction: column;
+  /* Gap */
+  gap: 0.25rem;
+  /* Flex 1 */
+  flex: 1;
+}
+
+/* File name */
+.file-name {
+  /* Margin 0 */
+  margin: 0;
+  /* Font size */
+  font-size: 0.95rem;
+  /* Font weight */
+  font-weight: 500;
+  /* Color */
+  color: #333;
+  /* Word break */
+  word-break: break-word;
+}
+
+/* File meta */
+.file-meta {
+  /* Margin 0 */
+  margin: 0;
+  /* Font size */
+  font-size: 0.8rem;
+  /* Color gray */
+  color: #999;
+}
+
+/* File actions */
+.file-actions {
+  /* Display flex */
+  display: flex;
+  /* Gap */
+  gap: 0.5rem;
+  /* Flex shrink 0 */
+  flex-shrink: 0;
+}
+
+/* File preview button */
+.file-preview-btn,
+.file-download-btn {
+  /* Padding */
+  padding: 0.4rem 0.8rem;
+  /* Background color */
+  background-color: #BA0C2F;
+  /* Color white */
+  color: white;
+  /* Border none */
+  border: none;
+  /* Border radius */
+  border-radius: 2px;
+  /* Font size */
+  font-size: 0.8rem;
+  /* Font weight */
+  font-weight: 500;
+  /* Cursor pointer */
+  cursor: pointer;
+  /* Transition */
+  transition: all 0.2s ease;
+}
+
+/* File preview button */
+.file-preview-btn {
+  /* Background color yellow/accent */
+  background-color: #FFCD00;
+  /* Color dark */
+  color: #333;
+}
+
+/* Hover states */
+.file-preview-btn:hover {
+  /* Background color darker yellow */
+  background-color: #FFB81C;
+}
+
+.file-download-btn:hover {
+  /* Background color darker red */
+  background-color: #8B081F;
+}
+
+/* File preview modal */
+.file-preview-modal {
+  /* Position fixed */
+  position: fixed;
+  /* Top left right bottom 0 */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Background overlay */
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Display flex */
+  display: flex;
+  /* Align items center */
+  align-items: center;
+  /* Justify content center */
+  justify-content: center;
+  /* Z index */
+  z-index: 2000;
+  /* Padding */
+  padding: 1rem;
+}
+
+/* File preview content */
+.file-preview-content {
+  /* Position relative */
+  position: relative;
+  /* Background white */
+  background-color: white;
+  /* Border radius */
+  border-radius: 6px;
+  /* Max width */
+  max-width: 800px;
+  /* Width 100% */
+  width: 100%;
+  /* Max height */
+  max-height: 90vh;
+  /* Overflow auto */
+  overflow-y: auto;
+  /* Box shadow */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* File preview body */
+.file-preview-body {
+  /* Padding */
+  padding: 2rem;
+  /* Display flex */
+  display: flex;
+  /* Align items center */
+  align-items: center;
+  /* Justify content center */
+  justify-content: center;
+}

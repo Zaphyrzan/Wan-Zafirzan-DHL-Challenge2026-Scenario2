@@ -2,6 +2,7 @@
  * Vercel Serverless Function: UiPath RPA Integration Endpoint
  * Purpose: Accept incident data from UiPath and create incidents in Supabase
  * Route: POST /api/incidents/ingest
+ * Updated: May 14, 2026 - Fixed Vercel routing and CORS
  */
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';

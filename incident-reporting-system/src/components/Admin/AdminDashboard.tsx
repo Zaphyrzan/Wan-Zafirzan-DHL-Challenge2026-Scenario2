@@ -6,23 +6,14 @@
 import { useState, useEffect } from 'react';
 import { getIncidents, updateIncident } from '../../services/incidentService';
 import { listIncidentFiles, generateSignedUrl } from '../../services/fileService';
+import type { Incident } from '../../types';
 import '../Dashboard/IncidentViewer.css';
 import './AdminDashboard.css';
 
 /**
- * Incident item interface
+ * Incident item interface - use actual Incident type from types/index.ts
  */
-interface IncidentItem {
-  id: string;
-  title: string;
-  description?: string;
-  status: 'draft' | 'submitted' | 'under_review' | 'resolved' | 'closed';
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  tags: string[];
-  created_by: string;
-  created_at: string;
-  updated_at: string;
-}
+type IncidentItem = Incident;
 
 /**
  * File item interface
@@ -296,7 +287,7 @@ export function AdminDashboard() {
   };
 
   /**
-   * Approve/Submit a draft incident
+   * Approve/Review a draft incident
    */
   const handleApproveIncident = async () => {
     if (!selectedIncident) return;
@@ -304,13 +295,13 @@ export function AdminDashboard() {
     try {
       setIsUpdating(true);
       
-      // Update incident status from draft to submitted
-      await updateIncident(selectedIncident.id, { status: 'submitted' });
+      // Update incident status from draft to reviewed
+      await updateIncident(selectedIncident.id, { status: 'reviewed', reviewed_at: new Date().toISOString() });
 
       // Update the selected incident in the UI
       setSelectedIncident({
         ...selectedIncident,
-        status: 'submitted'
+        status: 'reviewed'
       });
 
       // Refresh incidents list
@@ -641,12 +632,12 @@ export function AdminDashboard() {
                       opacity: isUpdating ? 0.6 : 1
                     }}
                   >
-                    {isUpdating ? 'Approving...' : '✓ Approve & Submit'}
+                    {isUpdating ? 'Reviewing...' : '✓ Review & Approve'}
                   </button>
                 )}
-                {selectedIncident.status === 'submitted' && (
+                {selectedIncident.status === 'reviewed' && (
                   <span style={{ padding: '10px 20px', color: '#10b981', fontWeight: 'bold' }}>
-                    ✓ Approved
+                    ✓ Reviewed & Approved
                   </span>
                 )}
               </div>

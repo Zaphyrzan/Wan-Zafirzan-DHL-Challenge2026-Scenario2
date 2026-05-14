@@ -485,7 +485,7 @@ export function UploadConsole() {
             <strong>Note:</strong> When you upload here, the incident status is set to <strong>Draft</strong> - waiting for admin review.
           </p>
           <p style={{ margin: '0' }}>
-            Once an admin approves it, the status changes to <strong>Submitted</strong> and it becomes active in the system.
+            Once an admin reviews and approves it, the status changes to <strong>Reviewed</strong> and it becomes active in the system.
           </p>
         </div>
       </div>
@@ -773,7 +773,7 @@ export function UploadConsole() {
             {/* Message */}
             <div>
               <p>Incident uploaded successfully!</p>
-              <p style={{ fontSize: '14px', marginTop: '8px', opacity: 0.8 }}>Status: <strong>Draft</strong> - Redirecting to dashboard...</p>
+              <p style={{ fontSize: '14px', marginTop: '8px', opacity: 0.8 }}>Status: <strong>Draft</strong> - Waiting for admin review. Redirecting to dashboard...</p>
             </div>
           </div>
         )}

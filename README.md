@@ -23,6 +23,23 @@
 
 ---
 
+## DEPLOYMENT INFORMATION
+
+**Live Application:** https://wan-zafirzan-dhl-challenge2026-scen.vercel.app
+
+**GitHub Repository:** https://github.com/Zaphyrzan/Wan-Zafirzan-DHL-Challenge2026-Scenario2
+
+**Test Credentials:**
+- Email: test@dhl.com
+- Password: SecurePassword123!
+
+**API Documentation:**
+- Base URL: https://wan-zafirzan-dhl-challenge2026-scen.vercel.app/api/incidents
+- Method: POST
+- Auth: x-api-key: uipath-secret-key-12345
+
+---
+
 ## 1. INTRODUCTION & SCENARIO DESCRIPTION
 
 ### Problem Statement
@@ -802,23 +819,6 @@ Result: ✅ Incident appears with correct priority, tags, and metadata
 - Push notifications for critical incidents
 - Mobile incident submission
 - Photo capture for damage reporting
-
----
-
-## DEPLOYMENT INFORMATION
-
-**Live Application:** https://wan-zafirzan-dhl-challenge2026-scen.vercel.app
-
-**GitHub Repository:** https://github.com/Zaphyrzan/Wan-Zafirzan-DHL-Challenge2026-Scenario2
-
-**Test Credentials:**
-- Email: test@dhl.com
-- Password: SecurePassword123!
-
-**API Documentation:**
-- Base URL: https://wan-zafirzan-dhl-challenge2026-scen.vercel.app/api/incidents
-- Method: POST
-- Auth: x-api-key: uipath-secret-key-12345
 
 ---
 

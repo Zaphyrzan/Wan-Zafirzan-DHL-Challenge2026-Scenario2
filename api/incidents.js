@@ -23,7 +23,17 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const { title, description, priority, tags, source, external_id } = req.body;
+    const { 
+      title, 
+      description, 
+      priority, 
+      tags, 
+      source, 
+      external_id,
+      file_content,
+      file_name,
+      file_type
+    } = req.body;
 
     // Validate title
     if (!title || !title.trim()) {
@@ -73,7 +83,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // Step 2: Create incident
     // Step 2: Create incident (created_by is required - we found a user above)
     const incidentBody = {
       title: title.trim(),
@@ -103,7 +112,50 @@ export default async function handler(req, res) {
       throw new Error('Failed to get incident ID');
     }
 
-    // Step 3: Log to audit (non-critical, don't fail if this errors)
+    // Step 3: If file content provided, upload it to Supabase Storage
+    let fileUrl = null;
+    if (file_content && file_name) {
+      try {
+        const fileName = `${incidentId}/${file_name}`;
+        const storageHeaders = {
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Content-Type': file_type || 'application/octet-stream',
+        };
+
+        const uploadRes = await fetch(
+          `${supabaseUrl}/storage/v1/object/incident-files/${fileName}`,
+          {
+            headers: storageHeaders,
+            method: 'POST',
+            body: file_content,
+          }
+        );
+
+        if (uploadRes.ok) {
+          fileUrl = `${supabaseUrl}/storage/v1/object/public/incident-files/${fileName}`;
+          console.log('File uploaded successfully:', fileUrl);
+
+          // Create file record in incident_files table
+          await fetch(`${supabaseUrl}/rest/v1/incident_files`, {
+            headers,
+            method: 'POST',
+            body: JSON.stringify({
+              incident_id: incidentId,
+              file_name: file_name,
+              file_path: fileName,
+              file_type: file_type || 'application/octet-stream',
+              source: source || 'google-drive',
+            }),
+          }).catch(err => console.error('Error logging file (non-critical):', err));
+        } else {
+          console.error('File upload failed:', uploadRes.status);
+        }
+      } catch (err) {
+        console.error('Error uploading file (non-critical):', err);
+      }
+    }
+
+    // Step 4: Log to audit (non-critical, don't fail if this errors)
     fetch(`${supabaseUrl}/rest/v1/incident_audit_log`, {
       headers,
       method: 'POST',
@@ -114,6 +166,7 @@ export default async function handler(req, res) {
         details: {
           source: source || 'uipath',
           external_id: external_id,
+          file_name: file_name,
           timestamp: new Date().toISOString(),
         },
       }),
@@ -123,6 +176,7 @@ export default async function handler(req, res) {
     return res.status(201).json({
       success: true,
       incident_id: incidentId,
+      file_url: fileUrl,
       message: 'Incident created successfully',
     });
   } catch (error) {

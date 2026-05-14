@@ -49,7 +49,7 @@ export function Navigation() {
             onClick={() => handleNavigation('/')}
             title="Dashboard"
           >
-            📊 Dashboard
+            Dashboard
           </button>
         </li>
         <li>
@@ -58,7 +58,7 @@ export function Navigation() {
             onClick={() => handleNavigation('/upload')}
             title="Upload Incident"
           >
-            📤 Upload
+            Upload
           </button>
         </li>
       </ul>

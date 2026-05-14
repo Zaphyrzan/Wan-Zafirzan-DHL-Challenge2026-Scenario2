@@ -111,17 +111,17 @@
 /* Nav link button */
 .nav-link {
   /* Padding */
-  padding: 0.65rem 1.2rem;
+  padding: 0.5rem 1rem;
   /* Background color transparent */
   background-color: transparent;
   /* Color white */
   color: white;
   /* Border */
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: none;
   /* Border radius */
-  border-radius: 2px;
+  border-radius: 0;
   /* Font size */
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   /* Font weight */
   font-weight: 500;
   /* Cursor pointer */
@@ -130,18 +130,22 @@
   transition: all 0.2s ease;
   /* Font family inherit */
   font-family: inherit;
+  /* Letter spacing */
+  letter-spacing: 0.3px;
 }
 
 /* Nav link hover */
 .nav-link:hover {
-  /* Background color yellow */
-  background-color: #FFCD00;
-  /* Color dark */
-  color: #333;
-  /* Border color yellow */
-  border-color: #FFCD00;
-  /* Box shadow */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  /* Background color transparent */
+  background-color: transparent;
+  /* Color yellow */
+  color: #FFCD00;
+  /* Border none */
+  border: none;
+  /* Text decoration underline */
+  text-decoration: underline;
+  /* Underline offset */
+  text-underline-offset: 4px;
 }
 
 /* Nav link active */

@@ -19,6 +19,10 @@
   min-height: 100%;
   /* Background color */
   background-color: #f8f9fa;
+  /* Box sizing border box */
+  box-sizing: border-box;
+  /* Margin 0 */
+  margin: 0;
 }
 
 /* Welcome section */

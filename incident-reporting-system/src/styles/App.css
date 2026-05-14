@@ -14,8 +14,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  width: 100vw;
-  overflow-x: hidden;
+  width: 100%;
   margin: 0;
   padding: 0;
   
@@ -522,6 +521,8 @@
   padding: 0;
   /* Background color */
   background-color: #f8f9fa;
+  /* Box sizing border box */
+  box-sizing: border-box;
 }
 
 /* Protected content area */
@@ -534,8 +535,13 @@
   flex: 1;
   /* Full width */
   width: 100%;
-  /* Overflow hidden */
+  /* Overflow auto */
   overflow-y: auto;
+  /* Box sizing border box */
+  box-sizing: border-box;
+  /* Margin padding 0 */
+  margin: 0;
+  padding: 0;
 }
 
 /* Mobile responsive */

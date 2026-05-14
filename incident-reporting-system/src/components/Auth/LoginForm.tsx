@@ -212,7 +212,7 @@ export function LoginForm() {
           {/* DHL Logo/Branding */}
           <div style={{ marginBottom: '1.5rem' }}>
             <img 
-              src="/dhl-logo.svg" 
+              src="/dhl-logo.png" 
               alt="DHL Logo" 
               style={{ height: '40px', objectFit: 'contain' }}
             />

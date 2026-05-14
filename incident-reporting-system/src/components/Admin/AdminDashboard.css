@@ -49,6 +49,8 @@
   font-weight: 700;
   /* Letter spacing */
   letter-spacing: 0.5px;
+  /* DHL Yellow/Golden color */
+  color: #FFCD00;
 }
 
 /* Welcome paragraph */
@@ -773,6 +775,8 @@
   .dashboard-welcome h1 {
     /* Font size */
     font-size: 1.75rem;
+    /* DHL Yellow/Golden color */
+    color: #FFCD00;
   }
 
   /* Critical incidents list */

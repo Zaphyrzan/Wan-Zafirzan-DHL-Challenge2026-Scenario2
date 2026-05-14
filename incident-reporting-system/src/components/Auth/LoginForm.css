@@ -251,35 +251,31 @@
   /* Position absolute */
   position: absolute;
   /* Right positioning */
-  right: 0.5rem;
-  /* Background color light gray */
+  right: 0.75rem;
+  /* Background transparent */
   background: transparent;
-  /* Border subtle */
-  border: 1px solid #D0D0D0;
+  /* Border none */
+  border: none;
   /* Cursor pointer */
   cursor: pointer;
-  /* Font size */
-  font-size: 0.75rem;
-  /* Font weight - corporate */
-  font-weight: 600;
-  /* Padding corporate */
-  padding: 0.35rem 0.6rem;
+  /* Display flex for icon alignment */
+  display: flex;
+  /* Align items center */
+  align-items: center;
+  /* Justify content center */
+  justify-content: center;
+  /* Padding */
+  padding: 0.5rem;
   /* Transition */
   transition: all 0.2s ease;
-  /* Border radius minimal */
-  border-radius: 2px;
-  /* Color DHL Red on hover */
-  color: #666;
-  /* Letter spacing */
-  letter-spacing: 0.3px;
+  /* Color gray by default */
+  color: #999;
+  /* No outline */
+  outline: none;
 }
 
 /* Password toggle hover state */
 .password-toggle:hover:not(:disabled) {
-  /* Background color light */
-  background-color: #f0f0f0;
-  /* Border color DHL Red */
-  border-color: #BA0C2F;
   /* Color DHL Red */
   color: #BA0C2F;
 }

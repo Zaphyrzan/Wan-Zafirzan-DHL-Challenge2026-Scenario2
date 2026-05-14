@@ -196,10 +196,6 @@
   /* Background white on focus */
   background-color: #FFFFFF;
 }
-  /* Border color blue */
-  border-color: #667eea;
-  /* Box shadow */
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 /* Form input disabled state */
@@ -255,25 +251,37 @@
   /* Position absolute */
   position: absolute;
   /* Right positioning */
-  right: 1rem;
-  /* Background none */
-  background: none;
-  /* Border none */
-  border: none;
+  right: 0.5rem;
+  /* Background color light gray */
+  background: transparent;
+  /* Border subtle */
+  border: 1px solid #D0D0D0;
   /* Cursor pointer */
   cursor: pointer;
   /* Font size */
-  font-size: 1.25rem;
-  /* Padding */
-  padding: 0;
+  font-size: 0.75rem;
+  /* Font weight - corporate */
+  font-weight: 600;
+  /* Padding corporate */
+  padding: 0.35rem 0.6rem;
   /* Transition */
-  transition: opacity 0.3s ease;
+  transition: all 0.2s ease;
+  /* Border radius minimal */
+  border-radius: 2px;
+  /* Color DHL Red on hover */
+  color: #666;
+  /* Letter spacing */
+  letter-spacing: 0.3px;
 }
 
 /* Password toggle hover state */
 .password-toggle:hover:not(:disabled) {
-  /* Opacity */
-  opacity: 0.7;
+  /* Background color light */
+  background-color: #f0f0f0;
+  /* Border color DHL Red */
+  border-color: #BA0C2F;
+  /* Color DHL Red */
+  color: #BA0C2F;
 }
 
 /* Password toggle disabled state */
@@ -303,8 +311,8 @@
   margin-right: 0.5rem;
   /* Cursor pointer */
   cursor: pointer;
-  /* Accent color blue */
-  accent-color: #667eea;
+  /* Accent color DHL Red */
+  accent-color: #BA0C2F;
 }
 
 /* Checkbox label styling */

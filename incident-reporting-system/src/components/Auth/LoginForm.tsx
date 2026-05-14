@@ -210,9 +210,12 @@ export function LoginForm() {
         {/* Form header */}
         <div className="login-header">
           {/* DHL Logo/Branding */}
-          <div style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '1rem', letterSpacing: '2px' }}>
-            <span style={{ color: '#BA0C2F' }}>DHL</span>
-            <span style={{ color: '#FFCD00', marginLeft: '4px' }}>|</span>
+          <div style={{ marginBottom: '1.5rem' }}>
+            <img 
+              src="/dhl-logo.svg" 
+              alt="DHL Logo" 
+              style={{ height: '40px', objectFit: 'contain' }}
+            />
           </div>
 
           {/* Main title */}
@@ -312,8 +315,12 @@ export function LoginForm() {
                 disabled={isLoading}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
-                {/* Show eye icon if password is hidden */}
-                {!showPassword ? '👁️' : '🙈'}
+                {/* Corporate eye icon */}
+                {!showPassword ? (
+                  <span style={{ fontSize: '16px', fontWeight: 'bold' }}>EYE</span>
+                ) : (
+                  <span style={{ fontSize: '14px', fontWeight: 'bold' }}>HIDE</span>
+                )}
               </button>
             </div>
 

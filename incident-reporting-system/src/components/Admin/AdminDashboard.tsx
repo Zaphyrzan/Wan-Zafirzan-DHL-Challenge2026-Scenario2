@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { getIncidents, updateIncident } from '../../services/incidentService';
+import { getIncidents, updateIncident, deleteIncident } from '../../services/incidentService';
 import { listIncidentFiles, generateSignedUrl } from '../../services/fileService';
 import type { Incident } from '../../types';
 import '../Dashboard/IncidentViewer.css';
@@ -35,6 +35,7 @@ export function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'draft' | 'reviewed' | 'published'>('all');
   const [selectedIncident, setSelectedIncident] = useState<IncidentItem | null>(null);
   const [incidentFiles, setIncidentFiles] = useState<FileItem[]>([]);
   const [filesLoading, setFilesLoading] = useState(false);
@@ -314,10 +315,78 @@ export function AdminDashboard() {
     }
   };
 
-  const getFilteredIncidents = (): IncidentItem[] => {
-    if (priorityFilter === 'all') return allIncidents;
+  /**
+   * Resolve/Publish an incident
+   */
+  const handleResolveIncident = async () => {
+    if (!selectedIncident) return;
 
-    return allIncidents.filter((inc) => inc.priority === priorityFilter);
+    try {
+      setIsUpdating(true);
+      
+      // Update incident status to published (resolved)
+      await updateIncident(selectedIncident.id, { status: 'published', published_at: new Date().toISOString() });
+
+      // Update the selected incident in the UI
+      setSelectedIncident({
+        ...selectedIncident,
+        status: 'published'
+      });
+
+      // Refresh incidents list
+      await fetchIncidents();
+    } catch (err: any) {
+      console.error('Error resolving incident:', err);
+      alert('Failed to resolve incident');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  /**
+   * Delete an incident
+   */
+  const handleDeleteIncident = async () => {
+    if (!selectedIncident) return;
+
+    // Confirm deletion
+    if (!window.confirm('Are you sure you want to delete this incident? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      setIsUpdating(true);
+      
+      // Delete the incident
+      await deleteIncident(selectedIncident.id);
+
+      // Close the modal
+      setSelectedIncident(null);
+
+      // Refresh incidents list
+      await fetchIncidents();
+    } catch (err: any) {
+      console.error('Error deleting incident:', err);
+      alert('Failed to delete incident');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const getFilteredIncidents = (): IncidentItem[] => {
+    let filtered = allIncidents;
+
+    // Filter by priority
+    if (priorityFilter !== 'all') {
+      filtered = filtered.filter((inc) => inc.priority === priorityFilter);
+    }
+
+    // Filter by status
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter((inc) => inc.status === statusFilter);
+    }
+
+    return filtered;
   };
 
   /**
@@ -443,6 +512,19 @@ export function AdminDashboard() {
             <option value="high">High</option>
             <option value="medium">Medium</option>
             <option value="low">Low</option>
+          </select>
+
+          {/* Status filter */}
+          <select
+            className="filter-select"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as any)}
+            style={{ marginLeft: '12px' }}
+          >
+            <option value="all">All Statuses</option>
+            <option value="draft">Draft</option>
+            <option value="reviewed">Reviewed</option>
+            <option value="published">Resolved</option>
           </select>
         </div>
 
@@ -616,30 +698,78 @@ export function AdminDashboard() {
               </div>
 
               {/* Action buttons */}
-              <div className="modal-section" style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '24px' }}>
+              <div className="modal-section" style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '24px', flexWrap: 'wrap' }}>
                 {selectedIncident.status === 'draft' && (
                   <button
                     className="btn btn-success"
                     onClick={handleApproveIncident}
                     disabled={isUpdating}
                     style={{
-                      padding: '10px 20px',
+                      padding: '10px 16px',
                       backgroundColor: '#10b981',
                       color: 'white',
                       border: 'none',
                       borderRadius: '6px',
                       cursor: isUpdating ? 'not-allowed' : 'pointer',
-                      opacity: isUpdating ? 0.6 : 1
+                      opacity: isUpdating ? 0.6 : 1,
+                      fontSize: '14px',
+                      fontWeight: '600'
                     }}
                   >
                     {isUpdating ? 'Reviewing...' : '✓ Review & Approve'}
                   </button>
                 )}
                 {selectedIncident.status === 'reviewed' && (
-                  <span style={{ padding: '10px 20px', color: '#10b981', fontWeight: 'bold' }}>
-                    ✓ Reviewed & Approved
+                  <>
+                    <button
+                      className="btn btn-primary"
+                      onClick={handleResolveIncident}
+                      disabled={isUpdating}
+                      style={{
+                        padding: '10px 16px',
+                        backgroundColor: '#3b82f6',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: isUpdating ? 'not-allowed' : 'pointer',
+                        opacity: isUpdating ? 0.6 : 1,
+                        fontSize: '14px',
+                        fontWeight: '600'
+                      }}
+                    >
+                      {isUpdating ? 'Resolving...' : '✓ Resolve & Close'}
+                    </button>
+                    <span style={{ padding: '10px 16px', color: '#10b981', fontWeight: 'bold' }}>
+                      ✓ Reviewed
+                    </span>
+                  </>
+                )}
+                {selectedIncident.status === 'published' && (
+                  <span style={{ padding: '10px 16px', color: '#10b981', fontWeight: 'bold' }}>
+                    ✓ Resolved & Closed
                   </span>
                 )}
+                
+                {/* Delete button - always available */}
+                <button
+                  className="btn btn-danger"
+                  onClick={handleDeleteIncident}
+                  disabled={isUpdating}
+                  style={{
+                    padding: '10px 16px',
+                    backgroundColor: '#ef4444',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: isUpdating ? 'not-allowed' : 'pointer',
+                    opacity: isUpdating ? 0.6 : 1,
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    marginLeft: 'auto'
+                  }}
+                >
+                  {isUpdating ? 'Deleting...' : '✕ Delete'}
+                </button>
               </div>
             </div>
           </div>

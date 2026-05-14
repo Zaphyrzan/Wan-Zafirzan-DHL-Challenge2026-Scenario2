@@ -1,3 +1,12 @@
+// Helper function to generate UUID v4
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -44,6 +53,7 @@ export default async function handler(req, res) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${supabaseKey}`,
       'apikey': supabaseKey,
+      'Prefer': 'return=representation',
     };
 
     // Step 1: Get or create RPA user
@@ -60,11 +70,13 @@ export default async function handler(req, res) {
     if (Array.isArray(existingUsers) && existingUsers.length > 0) {
       userId = existingUsers[0].id;
     } else {
-      // Create RPA user
+      // Create RPA user with explicit UUID
+      const newUserId = generateUUID();
       const createRes = await fetch(`${supabaseUrl}/rest/v1/user_profiles`, {
         headers,
         method: 'POST',
         body: JSON.stringify({
+          id: newUserId,
           email: rpaEmail,
           full_name: 'UiPath RPA System',
           role: 'system',
@@ -74,11 +86,11 @@ export default async function handler(req, res) {
       if (!createRes.ok) {
         const err = await createRes.json();
         console.error('Error creating RPA user:', err);
-        throw new Error(`Failed to create RPA user: ${err.message}`);
+        throw new Error(`Failed to create RPA user: ${JSON.stringify(err)}`);
       }
 
       const newUser = await createRes.json();
-      userId = newUser[0]?.id;
+      userId = newUser[0]?.id || newUserId;
 
       if (!userId) {
         throw new Error('Failed to get new user ID');
@@ -102,7 +114,7 @@ export default async function handler(req, res) {
     if (!incidentRes.ok) {
       const err = await incidentRes.json();
       console.error('Error creating incident:', err);
-      throw new Error(`Failed to create incident: ${err.message}`);
+      throw new Error(`Failed to create incident: ${JSON.stringify(err)}`);
     }
 
     const incident = await incidentRes.json();

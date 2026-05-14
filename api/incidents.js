@@ -47,39 +47,42 @@ export default async function handler(req, res) {
       'Prefer': 'return=representation',
     };
 
-    // Step 1: Try to get existing RPA user, but don't fail if not found
-    const rpaEmail = 'rpa@dhl-incident-system.internal';
+    // Step 1: Get first available user (required for created_by foreign key)
     let userId = null;
 
     try {
-      const selectRes = await fetch(
-        `${supabaseUrl}/rest/v1/user_profiles?email=eq.${encodeURIComponent(rpaEmail)}&select=id`,
+      const usersRes = await fetch(
+        `${supabaseUrl}/rest/v1/user_profiles?select=id&limit=1`,
         { headers, method: 'GET' }
       );
 
-      const existingUsers = await selectRes.json();
-      if (Array.isArray(existingUsers) && existingUsers.length > 0) {
-        userId = existingUsers[0].id;
-        console.log('Found existing RPA user:', userId);
+      const users = await usersRes.json();
+      if (Array.isArray(users) && users.length > 0) {
+        userId = users[0].id;
+        console.log('Found user for created_by:', userId);
       }
     } catch (err) {
-      console.log('Could not query RPA user, proceeding without created_by');
+      console.error('Could not query users:', err);
     }
 
-    // Step 2: Create incident (created_by is optional)
-    // Step 2: Create incident (created_by is optional)
+    // If no users exist, we can't create incidents
+    if (!userId) {
+      return res.status(500).json({
+        error: 'No users in system',
+        message: 'At least one user must exist in the system to create incidents',
+      });
+    }
+
+    // Step 2: Create incident
+    // Step 2: Create incident (created_by is required - we found a user above)
     const incidentBody = {
       title: title.trim(),
       description: description || '',
       priority: priority || 'medium',
       status: 'submitted',
       tags: tags || [],
+      created_by: userId,
     };
-
-    // Only add created_by if we have a valid user
-    if (userId) {
-      incidentBody.created_by = userId;
-    }
 
     const incidentRes = await fetch(`${supabaseUrl}/rest/v1/incidents`, {
       headers,
@@ -107,7 +110,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         incident_id: incidentId,
         action: 'created_via_rpa',
-        actor_id: userId || 'system',
+        actor_id: userId,
         details: {
           source: source || 'uipath',
           external_id: external_id,

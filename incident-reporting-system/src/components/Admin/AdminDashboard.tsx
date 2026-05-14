@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { getIncidents } from '../../services/incidentService';
+import { getIncidents, updateIncident } from '../../services/incidentService';
 import { listIncidentFiles, generateSignedUrl } from '../../services/fileService';
 import '../Dashboard/IncidentViewer.css';
 import './AdminDashboard.css';
@@ -47,6 +47,7 @@ export function AdminDashboard() {
   const [selectedIncident, setSelectedIncident] = useState<IncidentItem | null>(null);
   const [incidentFiles, setIncidentFiles] = useState<FileItem[]>([]);
   const [filesLoading, setFilesLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   // Fetch incidents on mount
   useEffect(() => {
@@ -293,6 +294,35 @@ export function AdminDashboard() {
       </div>
     );
   };
+
+  /**
+   * Approve/Submit a draft incident
+   */
+  const handleApproveIncident = async () => {
+    if (!selectedIncident) return;
+
+    try {
+      setIsUpdating(true);
+      
+      // Update incident status from draft to submitted
+      await updateIncident(selectedIncident.id, { status: 'submitted' });
+
+      // Update the selected incident in the UI
+      setSelectedIncident({
+        ...selectedIncident,
+        status: 'submitted'
+      });
+
+      // Refresh incidents list
+      await fetchIncidents();
+    } catch (err: any) {
+      console.error('Error approving incident:', err);
+      alert('Failed to approve incident');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   const getFilteredIncidents = (): IncidentItem[] => {
     if (priorityFilter === 'all') return allIncidents;
 
@@ -591,6 +621,33 @@ export function AdminDashboard() {
                       </div>
                     ))}
                   </div>
+                )}
+              </div>
+
+              {/* Action buttons */}
+              <div className="modal-section" style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '24px' }}>
+                {selectedIncident.status === 'draft' && (
+                  <button
+                    className="btn btn-success"
+                    onClick={handleApproveIncident}
+                    disabled={isUpdating}
+                    style={{
+                      padding: '10px 20px',
+                      backgroundColor: '#10b981',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      cursor: isUpdating ? 'not-allowed' : 'pointer',
+                      opacity: isUpdating ? 0.6 : 1
+                    }}
+                  >
+                    {isUpdating ? 'Approving...' : '✓ Approve & Submit'}
+                  </button>
+                )}
+                {selectedIncident.status === 'submitted' && (
+                  <span style={{ padding: '10px 20px', color: '#10b981', fontWeight: 'bold' }}>
+                    ✓ Approved
+                  </span>
                 )}
               </div>
             </div>

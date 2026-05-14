@@ -6,6 +6,7 @@
  */
 
 import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
 import { uploadFile, calculateFileHash } from '../../services/fileService';
 import { createIncident, checkForDuplicate } from '../../services/incidentService';
@@ -51,6 +52,9 @@ interface IncidentDetails {
 export function UploadConsole() {
   // Get current user from auth context
   const { userId } = useAuthContext();
+  
+  // Get navigation hook to redirect after upload
+  const navigate = useNavigate();
 
   // Reference to hidden file input
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -366,7 +370,7 @@ export function UploadConsole() {
               });
 
               // Skip uploading this file
-              return;
+              return { success: false };
             }
 
             // Upload file to storage
@@ -379,6 +383,8 @@ export function UploadConsole() {
               updated[index].progress = 100;
               return updated;
             });
+
+            return { success: true };
           } catch (error) {
             // Update file status to error
             setSelectedFiles(prev => {
@@ -387,19 +393,25 @@ export function UploadConsole() {
               updated[index].error = handleError(error);
               return updated;
             });
+
+            return { success: false };
           }
         })()
       );
 
       // Wait for all uploads to complete
-      await Promise.all(uploadPromises);
+      const results = await Promise.all(uploadPromises);
 
       // Check if any files uploaded successfully
-      const anySuccess = selectedFiles.some(f => f.status === 'success');
+      const anySuccess = results.some(r => r.success);
 
       // Set upload status based on results
       if (anySuccess) {
         setUploadStatus('completed');
+        // Redirect to dashboard after 2 seconds to show success message
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
       } else {
         setUploadStatus('error');
         setErrorMessage('No files were uploaded successfully');
@@ -466,6 +478,16 @@ export function UploadConsole() {
         <p className="console-subtitle">
           Upload incident files and provide details. Supports PDF, DOCX, TXT, PNG, JPG
         </p>
+        
+        {/* Status explanation */}
+        <div style={{ marginTop: '16px', padding: '12px', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderRadius: '6px', fontSize: '14px' }}>
+          <p style={{ margin: '0 0 6px 0' }}>
+            <strong>Note:</strong> When you upload here, the incident status is set to <strong>Draft</strong> - waiting for admin review.
+          </p>
+          <p style={{ margin: '0' }}>
+            Once an admin approves it, the status changes to <strong>Submitted</strong> and it becomes active in the system.
+          </p>
+        </div>
       </div>
 
       {/* Main console content */}
@@ -749,7 +771,10 @@ export function UploadConsole() {
             <span className="success-icon">✓</span>
 
             {/* Message */}
-            <p>Incident uploaded successfully!</p>
+            <div>
+              <p>Incident uploaded successfully!</p>
+              <p style={{ fontSize: '14px', marginTop: '8px', opacity: 0.8 }}>Status: <strong>Draft</strong> - Redirecting to dashboard...</p>
+            </div>
           </div>
         )}
       </div>

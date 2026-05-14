@@ -1,12 +1,3 @@
-// Helper function to generate UUID v4
-function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
-
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -56,59 +47,44 @@ export default async function handler(req, res) {
       'Prefer': 'return=representation',
     };
 
-    // Step 1: Get or create RPA user
+    // Step 1: Try to get existing RPA user, but don't fail if not found
     const rpaEmail = 'rpa@dhl-incident-system.internal';
+    let userId = null;
 
-    const selectRes = await fetch(
-      `${supabaseUrl}/rest/v1/user_profiles?email=eq.${encodeURIComponent(rpaEmail)}&select=id`,
-      { headers, method: 'GET' }
-    );
+    try {
+      const selectRes = await fetch(
+        `${supabaseUrl}/rest/v1/user_profiles?email=eq.${encodeURIComponent(rpaEmail)}&select=id`,
+        { headers, method: 'GET' }
+      );
 
-    const existingUsers = await selectRes.json();
-    let userId;
-
-    if (Array.isArray(existingUsers) && existingUsers.length > 0) {
-      userId = existingUsers[0].id;
-    } else {
-      // Create RPA user with explicit UUID
-      const newUserId = generateUUID();
-      const createRes = await fetch(`${supabaseUrl}/rest/v1/user_profiles`, {
-        headers,
-        method: 'POST',
-        body: JSON.stringify({
-          id: newUserId,
-          email: rpaEmail,
-          full_name: 'UiPath RPA System',
-          role: 'system',
-        }),
-      });
-
-      if (!createRes.ok) {
-        const err = await createRes.json();
-        console.error('Error creating RPA user:', err);
-        throw new Error(`Failed to create RPA user: ${JSON.stringify(err)}`);
+      const existingUsers = await selectRes.json();
+      if (Array.isArray(existingUsers) && existingUsers.length > 0) {
+        userId = existingUsers[0].id;
+        console.log('Found existing RPA user:', userId);
       }
-
-      const newUser = await createRes.json();
-      userId = newUser[0]?.id || newUserId;
-
-      if (!userId) {
-        throw new Error('Failed to get new user ID');
-      }
+    } catch (err) {
+      console.log('Could not query RPA user, proceeding without created_by');
     }
 
-    // Step 2: Create incident
+    // Step 2: Create incident (created_by is optional)
+    // Step 2: Create incident (created_by is optional)
+    const incidentBody = {
+      title: title.trim(),
+      description: description || '',
+      priority: priority || 'medium',
+      status: 'submitted',
+      tags: tags || [],
+    };
+
+    // Only add created_by if we have a valid user
+    if (userId) {
+      incidentBody.created_by = userId;
+    }
+
     const incidentRes = await fetch(`${supabaseUrl}/rest/v1/incidents`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({
-        title: title.trim(),
-        description: description || '',
-        priority: priority || 'medium',
-        status: 'submitted',
-        tags: tags || [],
-        created_by: userId,
-      }),
+      body: JSON.stringify(incidentBody),
     });
 
     if (!incidentRes.ok) {
@@ -131,7 +107,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         incident_id: incidentId,
         action: 'created_via_rpa',
-        actor_id: userId,
+        actor_id: userId || 'system',
         details: {
           source: source || 'uipath',
           external_id: external_id,

@@ -248,36 +248,32 @@ export async function getIncidentVersionHistory(incidentId: string) {
  * Check for duplicate incident using content hash
  * Looks for incidents created in the last 14 days with the same hash
  * @param contentHash - Hash of the incident content
- * @returns Duplicate incident if found, null otherwise
+ * @returns True if duplicate found, false otherwise
  */
-export async function checkForDuplicate(contentHash: string): Promise<Incident | null> {
+export async function checkForDuplicate(contentHash: string): Promise<boolean> {
   try {
     // Calculate date 14 days ago
-    const fourteenDaysAgo = new Date();
-    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
-    const dateThreshold = fourteenDaysAgo.toISOString();
+    const twoWeeksAgo = new Date();
+    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
 
     // Query for incidents with same hash created in last 14 days
     const { data, error } = await supabase
       .from('incidents')
-      .select('*')
+      .select('id')
       .eq('content_hash', contentHash)
-      .gte('created_at', dateThreshold)
-      .limit(1)
-      .single();
+      .gte('created_at', twoWeeksAgo.toISOString())
+      .limit(1);
 
-    // Handle "no rows" error - this is expected
-    if (error?.code === 'PGRST116') {
-      return null;
+    // Check for errors
+    if (error) {
+      console.error('Error checking duplicates:', error);
+      return false;
     }
 
-    // Check for other errors
-    if (error) throw error;
-
-    // Return the duplicate incident or null
-    return data as Incident | null;
-  } catch (error) {
-    console.error('Error checking for duplicates:', error);
-    throw error;
+    // Return true if duplicate found, false otherwise
+    return (data && data.length > 0) ? true : false;
+  } catch (err) {
+    console.error('Duplicate check error:', err);
+    return false;
   }
 }

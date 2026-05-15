@@ -4,7 +4,6 @@
  */
 
 import { useNavigate } from 'react-router-dom';
-import { useAuthContext } from '../../context/AuthContext';
 import './Navigation.css';
 
 /**
@@ -13,20 +12,12 @@ import './Navigation.css';
 export function Navigation() {
   // Router and auth
   const navigate = useNavigate();
-  const { logout } = useAuthContext();
 
   /**
    * Handle navigation
    */
   const handleNavigation = (path: string) => {
     navigate(path);
-  };
-
-  /**
-   * Handle logout
-   */
-  const handleLogout = async () => {
-    await logout();
   };
 
   // JSX render
@@ -57,10 +48,6 @@ export function Navigation() {
           <span className="sidebar-label">Upload</span>
         </button>
       </nav>
-
-      <div className="sidebar-footer">
-        <button className="signout-btn" onClick={handleLogout} title="Sign out">Sign Out</button>
-      </div>
     </aside>
   );
 }

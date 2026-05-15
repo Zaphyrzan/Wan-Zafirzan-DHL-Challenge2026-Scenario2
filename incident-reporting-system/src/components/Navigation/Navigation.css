@@ -321,30 +321,6 @@
   height: 20px;
 }
 
-.sidebar-footer { 
-  padding: 0;
-  margin-top: auto;
-  margin-bottom: 0;
-}
-
-.signout-btn {
-  width: 100%;
-  padding: 0.75rem 0.875rem;
-  border: none;
-  background: #FFCD00;
-  color: #222;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-}
-
-.signout-btn:hover {
-  background: #FFB81C;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
 /* Top bar styles */
 .topbar {
   height: 64px;

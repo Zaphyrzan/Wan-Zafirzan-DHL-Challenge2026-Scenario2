@@ -510,12 +510,14 @@
 .protected-layout {
   /* Display flex */
   display: flex;
-  /* Flex direction column */
-  flex-direction: column;
+  /* Flex direction row */
+  flex-direction: row;
   /* Full height */
   min-height: 100vh;
   /* Full width */
   width: 100%;
+  /* Stretch children */
+  align-items: stretch;
   /* No margins/padding */
   margin: 0;
   padding: 0;
@@ -535,6 +537,8 @@
   flex: 1;
   /* Full width */
   width: 100%;
+  /* Prevent flex overflow from forcing a stack */
+  min-width: 0;
   /* Overflow auto */
   overflow-y: auto;
   /* Box sizing border box */

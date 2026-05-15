@@ -64,19 +64,6 @@ export function AdminDashboard() {
       // Set all incidents
       setAllIncidents(incidentsList);
 
-      // Update diagnostic banner (helps verify component mounted on deployed site)
-      try {
-        const diag = document.getElementById('diagnostic-banner');
-        if (diag) {
-          diag.textContent = `DIAGNOSTIC: AdminDashboard mounted — ${incidentsList.length} incidents loaded`;
-          diag.style.display = 'block';
-          diag.style.background = '#e6fffa';
-          diag.style.color = '#065f46';
-        }
-      } catch (e) {
-        // ignore
-      }
-
       // Filter critical and high priority incidents (for dashboard)
       const critical = incidentsList.filter(
         (inc) => inc.priority === 'critical' || inc.priority === 'high'
@@ -438,15 +425,6 @@ export function AdminDashboard() {
   // JSX render
   return (
     <div className="admin-dashboard">
-      {/* Debug panel: always visible to confirm dashboard render and data */}
-      <div className="debug-panel" role="status">
-        <strong>DEBUG</strong>: {allIncidents.length} incidents loaded. Showing first up to 5:
-        <ul style={{ margin: '8px 0 0 16px', padding: 0 }}>
-          {allIncidents.slice(0, 5).map((inc) => (
-            <li key={inc.id} style={{ listStyle: 'disc', marginLeft: '12px', color: '#333' }}>{inc.title || '(no title)'}</li>
-          ))}
-        </ul>
-      </div>
       {/* Active incidents by priority */}
       <div className="priority-chart-section">
         <div className="section-header">

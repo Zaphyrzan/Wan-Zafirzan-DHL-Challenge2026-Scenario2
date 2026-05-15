@@ -18,6 +18,7 @@ interface RpaIncidentRequest {
   tags?: string[];
   source?: string; // e.g., 'uipath-google-drive'
   external_id?: string; // Reference to original document/file
+  sender?: string;
 }
 
 /**
@@ -139,6 +140,7 @@ export default async function handler(
         status: 'submitted', // RPA submissions are pre-submitted
         tags: body.tags || [],
         created_by: rpauseId,
+        ...(body.sender ? { sender: body.sender } : {}),
         // Store RPA metadata in tags if source provided
         ...(body.source && { tags: [...(body.tags || []), `source:${body.source}`] }),
         ...(body.external_id && {
@@ -175,6 +177,10 @@ export default async function handler(
       success: true,
       incident_id: incident?.id,
       message: 'Incident created successfully from RPA submission',
+      data: {
+        id: incident?.id,
+        sender: body.sender,
+      },
     });
   } catch (error: any) {
     console.error('API error:', error);

@@ -74,7 +74,7 @@ export async function getIncidents(filters?: SearchFilters): Promise<PaginatedRe
 
     // Apply pagination
     const page = filters?.page || 1;
-    const limit = filters?.limit || 10;
+    const limit = filters?.limit || 1000;
     const offset = (page - 1) * limit;
 
     query = query.range(offset, offset + limit - 1);

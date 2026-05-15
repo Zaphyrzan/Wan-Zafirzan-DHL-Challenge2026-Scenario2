@@ -12,6 +12,7 @@ import { AdminDashboard } from './components/Admin/AdminDashboard';
 import { UploadConsole } from './components/UploadConsole/UploadConsole';
 import { Navigation } from './components/Navigation/Navigation';
 import { TopBar } from './components/Navigation/TopBar';
+import { IncidentListPage } from './components/Incidents/IncidentListPage';
 import './styles/App.css';
 
 /**
@@ -117,6 +118,66 @@ function App() {
               <AuthGuard>
                 <ProtectedLayout>
                   <UploadConsole />
+                </ProtectedLayout>
+              </AuthGuard>
+            }
+          />
+
+          <Route
+            path="/incidents"
+            element={
+              <AuthGuard>
+                <ProtectedLayout>
+                  <IncidentListPage
+                    view="all"
+                    title="Incident Overview"
+                    subtitle="All incidents in one place"
+                  />
+                </ProtectedLayout>
+              </AuthGuard>
+            }
+          />
+
+          <Route
+            path="/incidents/submitted"
+            element={
+              <AuthGuard>
+                <ProtectedLayout>
+                  <IncidentListPage
+                    view="submitted"
+                    title="Submitted Incidents"
+                    subtitle="Incidents waiting for review or already submitted"
+                  />
+                </ProtectedLayout>
+              </AuthGuard>
+            }
+          />
+
+          <Route
+            path="/incidents/draft"
+            element={
+              <AuthGuard>
+                <ProtectedLayout>
+                  <IncidentListPage
+                    view="draft"
+                    title="Draft Incidents"
+                    subtitle="Incidents still being prepared"
+                  />
+                </ProtectedLayout>
+              </AuthGuard>
+            }
+          />
+
+          <Route
+            path="/incidents/resolved"
+            element={
+              <AuthGuard>
+                <ProtectedLayout>
+                  <IncidentListPage
+                    view="resolved"
+                    title="Resolved Incidents"
+                    subtitle="Closed and published incidents"
+                  />
                 </ProtectedLayout>
               </AuthGuard>
             }

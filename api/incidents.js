@@ -30,6 +30,7 @@ export default async function handler(req, res) {
       tags, 
       source, 
       external_id,
+      sender,
       file_content,
       file_name,
       file_type
@@ -91,6 +92,7 @@ export default async function handler(req, res) {
       status: 'submitted',
       tags: tags || [],
       created_by: userId,
+      ...(sender ? { sender } : {}),
     };
 
     const incidentRes = await fetch(`${supabaseUrl}/rest/v1/incidents`, {
@@ -178,6 +180,7 @@ export default async function handler(req, res) {
       incident_id: incidentId,
       file_url: fileUrl,
       message: 'Incident created successfully',
+      sender: sender || null,
     });
   } catch (error) {
     console.error('API Handler Error:', error);

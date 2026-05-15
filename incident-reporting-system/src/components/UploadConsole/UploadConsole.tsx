@@ -496,7 +496,11 @@ export function UploadConsole() {
         {errorMessage && (
           <div className="error-banner" role="alert">
             {/* Error icon */}
-            <span className="error-icon">⚠️</span>
+            <svg className="error-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+              <path d="M12 9v4" stroke="#991B1B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 17h.01" stroke="#991B1B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="#991B1B" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
 
             {/* Error message */}
             <p>{errorMessage}</p>
@@ -524,7 +528,11 @@ export function UploadConsole() {
           {/* Drop zone content */}
           <div className="drop-zone-content">
             {/* Icon */}
-            <span className="drop-icon">📁</span>
+            <svg className="drop-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="#BA0C2F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M7 10l5-5 5 5" stroke="#BA0C2F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 5v10" stroke="#BA0C2F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
 
             {/* Main text */}
             <h3 className="drop-title">
@@ -554,7 +562,10 @@ export function UploadConsole() {
                     {uploadedFile.preview ? (
                       <img src={uploadedFile.preview} alt="preview" />
                     ) : (
-                      <span className="file-icon">📄</span>
+                      <svg className="file-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#333" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M14 2v6h6" stroke="#333" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
                     )}
                   </div>
 

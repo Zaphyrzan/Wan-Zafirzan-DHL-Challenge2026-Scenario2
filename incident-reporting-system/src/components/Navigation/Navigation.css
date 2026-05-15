@@ -315,13 +315,16 @@
 /* Top bar styles */
 .topbar {
   height: 64px;
-  background: #fff;
-  border-bottom: 1px solid #e6e6e6;
+  background: #BA0C2F;
+  color: white;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 30;
 }
 
 .topbar-search input {
@@ -329,7 +332,9 @@
   max-width: 60%;
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
-  border: 1px solid #ddd;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
 }
 
 .topbar-actions { display: flex; align-items: center; gap: 1rem; }
@@ -352,4 +357,4 @@
 
 /* Layout adjustments for protected layout */
 .protected-layout { display: flex; min-height: 100vh; }
-.protected-content { flex: 1; display: flex; flex-direction: column; }
+.protected-content { flex: 1; display: flex; flex-direction: column; background:#f8f9fa; }

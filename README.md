@@ -2,6 +2,10 @@
 
 Wan Zafirzan (A22MJ8003) - SECJ 3483: Web Technology
 
+## UiPath Automation
+
+The UiPath project is stored in the `Resource/` folder. Use it to test the email and Google Drive connectors for the incident automation flow before pushing updates.
+
 | | |
 |---|---|
 | **Live App** | https://wan-zafirzan-dhl-challenge2026-scen.vercel.app |

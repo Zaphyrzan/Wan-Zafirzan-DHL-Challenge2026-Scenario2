@@ -91,7 +91,7 @@ export function AdminDashboard() {
 
       // Filter critical and high priority incidents (for dashboard)
       const critical = incidentsList.filter(
-        (inc) => inc.priority === 'critical' || inc.priority === 'high'
+        (inc) => (inc.priority === 'critical' || inc.priority === 'high') && inc.status !== 'published'
       );
 
       // Sort by priority (critical first) then by created_at (newest first)
@@ -344,30 +344,7 @@ export function AdminDashboard() {
   /**
    * Resolve/Publish an incident
    */
-  const handleResolveIncident = async () => {
-    if (!selectedIncident) return;
-
-    try {
-      setIsUpdating(true);
-      
-      // Update incident status to published (resolved)
-      await updateIncident(selectedIncident.id, { status: 'published', published_at: new Date().toISOString() });
-
-      // Update the selected incident in the UI
-      setSelectedIncident({
-        ...selectedIncident,
-        status: 'published'
-      });
-
-      // Refresh incidents list
-      await fetchIncidents();
-    } catch (err: any) {
-      console.error('Error resolving incident:', err);
-      alert('Failed to resolve incident');
-    } finally {
-      setIsUpdating(false);
-    }
-  };
+  
 
   /**
    * Open the incident review page
@@ -797,7 +774,7 @@ export function AdminDashboard() {
                   <>
                     <button
                       className="btn btn-primary"
-                      onClick={handleResolveIncident}
+                      onClick={handleReviewIncident}
                       disabled={isUpdating}
                       style={{
                         padding: '10px 16px',
@@ -811,7 +788,7 @@ export function AdminDashboard() {
                         fontWeight: '600'
                       }}
                     >
-                      {isUpdating ? 'Resolving...' : '✓ Resolve & Close'}
+                      {isUpdating ? 'Opening review...' : '✓ Resolve & Close'}
                     </button>
                     <span style={{ padding: '10px 16px', color: '#10b981', fontWeight: 'bold' }}>
                       ✓ Reviewed

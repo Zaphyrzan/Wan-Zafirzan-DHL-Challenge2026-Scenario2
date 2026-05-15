@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getIncidents } from '../../services/incidentService';
 import { listIncidentFiles, generateSignedUrl } from '../../services/fileService';
 import type { Incident } from '../../types';
@@ -30,6 +31,7 @@ export function IncidentListPage({ view, title, subtitle }: IncidentListPageProp
   const [incidentFiles, setIncidentFiles] = useState<FileItem[]>([]);
   const [filesLoading, setFilesLoading] = useState(false);
   const [previewFile, setPreviewFile] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchIncidents = async () => {
@@ -263,6 +265,18 @@ export function IncidentListPage({ view, title, subtitle }: IncidentListPageProp
                   <span className={`incident-list-badge incident-list-priority-${incident.priority}`}>
                     {incident.priority.toUpperCase()}
                   </span>
+                  {incident.status !== 'published' && (
+                    <button
+                      className="incident-review-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/incidents/review/${incident.id}`);
+                      }}
+                      style={{ marginLeft: 8, padding: '6px 10px', fontSize: 12, borderRadius: 6 }}
+                    >
+                      Review
+                    </button>
+                  )}
                 </div>
 
                 <p className="incident-list-description">{incident.description}</p>

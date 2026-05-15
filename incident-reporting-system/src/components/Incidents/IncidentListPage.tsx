@@ -232,7 +232,7 @@ export function IncidentListPage({ view, title, subtitle }: IncidentListPageProp
       ) : filteredIncidents.length === 0 ? (
         <div className="incident-list-state">No incidents found</div>
       ) : (
-        <div>
+        <div className="incident-list-results">
           <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
             <label style={{ fontWeight: 600 }}>Sort:</label>
             <select value={sortOption} onChange={(e) => setSortOption(e.target.value as any)}>
@@ -244,47 +244,48 @@ export function IncidentListPage({ view, title, subtitle }: IncidentListPageProp
           </div>
 
           <div className="incident-list-grid">
-          {sortedIncidents.map((incident) => (
-            <article
-              key={incident.id}
-              className="incident-list-card"
-              role="button"
-              tabIndex={0}
-              onClick={() => setSelectedIncident(incident)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  setSelectedIncident(incident);
-                }
-              }}
-            >
-              <div className="incident-list-card-header">
-                <h2>{incident.title}</h2>
-                <span className={`incident-list-badge incident-list-priority-${incident.priority}`}>
-                  {incident.priority.toUpperCase()}
-                </span>
-              </div>
-
-              <p className="incident-list-description">{incident.description}</p>
-
-              <p className="incident-list-sender">Sender: {incident.sender || 'Not provided'}</p>
-
-              {incident.tags.length > 0 && (
-                <div className="incident-list-tags">
-                  {incident.tags.map((tag) => (
-                    <span key={tag} className="incident-list-tag">{tag}</span>
-                  ))}
+            {sortedIncidents.map((incident) => (
+              <article
+                key={incident.id}
+                className="incident-list-card"
+                role="button"
+                tabIndex={0}
+                onClick={() => setSelectedIncident(incident)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedIncident(incident);
+                  }
+                }}
+              >
+                <div className="incident-list-card-header">
+                  <h2>{incident.title}</h2>
+                  <span className={`incident-list-badge incident-list-priority-${incident.priority}`}>
+                    {incident.priority.toUpperCase()}
+                  </span>
                 </div>
-              )}
 
-              <div className="incident-list-footer">
-                <span className={`incident-list-status incident-list-status-${incident.status}`}>
-                  {getStatusLabelUpper(incident.status)}
-                </span>
-                <span>{formatDate(incident.created_at)}</span>
-              </div>
-            </article>
-          ))}
+                <p className="incident-list-description">{incident.description}</p>
+
+                <p className="incident-list-sender">Sender: {incident.sender || 'Not provided'}</p>
+
+                {incident.tags.length > 0 && (
+                  <div className="incident-list-tags">
+                    {incident.tags.map((tag) => (
+                      <span key={tag} className="incident-list-tag">{tag}</span>
+                    ))}
+                  </div>
+                )}
+
+                <div className="incident-list-footer">
+                  <span className={`incident-list-status incident-list-status-${incident.status}`}>
+                    {getStatusLabelUpper(incident.status)}
+                  </span>
+                  <span>{formatDate(incident.created_at)}</span>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       )}
 

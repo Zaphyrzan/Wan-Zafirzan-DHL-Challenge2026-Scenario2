@@ -656,27 +656,29 @@ export function AdminDashboard() {
                 >
                   {getStatusLabelUpper(selectedIncident.status)}
                 </span>
-                {/* Top-right actions: Move Review button here for easier access */}
-                <div style={{ marginLeft: 12 }}>
-                  <button
-                    className="btn btn-primary"
-                    onClick={handleReviewIncident}
-                    disabled={isUpdating}
-                    style={{
-                      padding: '8px 12px',
-                      backgroundColor: '#BA0C2F',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      cursor: isUpdating ? 'not-allowed' : 'pointer',
-                      opacity: isUpdating ? 0.6 : 1,
-                      fontSize: '13px',
-                      fontWeight: 600
-                    }}
-                  >
-                    Review
-                  </button>
-                </div>
+                {/* Top-right actions: show prominent Review & Approve for drafts */}
+                {selectedIncident.status === 'draft' && (
+                  <div style={{ marginLeft: 12 }}>
+                    <button
+                      className="btn btn-success"
+                      onClick={handleReviewIncident}
+                      disabled={isUpdating}
+                      style={{
+                        padding: '10px 16px',
+                        backgroundColor: '#10b981',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: isUpdating ? 'not-allowed' : 'pointer',
+                        opacity: isUpdating ? 0.6 : 1,
+                        fontSize: '14px',
+                        fontWeight: 600
+                      }}
+                    >
+                      {isUpdating ? 'Reviewing...' : '✓ Review & Approve'}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 

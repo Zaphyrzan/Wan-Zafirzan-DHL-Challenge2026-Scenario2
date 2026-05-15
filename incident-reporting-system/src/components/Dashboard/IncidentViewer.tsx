@@ -463,33 +463,30 @@ export function IncidentViewer() {
       {/* Detail modal - shows when incident is selected */}
       {selectedIncident && (
         <div className="incident-detail-modal" onClick={() => setSelectedIncident(null)}>
-          {/* Modal content */}
-          <div className="incident-detail-content" onClick={(e) => e.stopPropagation()}>
-            {/* Close button */}
+          <div
+            className="incident-detail-content"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               className="modal-close-btn"
               onClick={() => setSelectedIncident(null)}
-              aria-label="Close"
             >
-              ✕
+              ×
             </button>
 
-            {/* Modal header */}
             <div className="modal-header">
               <h2>{selectedIncident.title}</h2>
               <div className="modal-badges">
-                <span className={`badge status-badge ${getStatusColor(selectedIncident.status)}`}>
-                  {selectedIncident.status.replace('_', ' ')}
+                <span className={`priority-badge priority-${selectedIncident.priority}`}>
+                  {selectedIncident.priority.toUpperCase()}
                 </span>
-                <span className={`badge priority-badge ${getPriorityColor(selectedIncident.priority)}`}>
-                  {selectedIncident.priority}
+                <span className={`status-badge status-${selectedIncident.status}`}>
+                  {selectedIncident.status.replace(/_/g, ' ').toUpperCase()}
                 </span>
               </div>
             </div>
 
-            {/* Modal body */}
             <div className="modal-body">
-              {/* Description */}
               {selectedIncident.description && (
                 <div className="modal-section">
                   <h3>Description</h3>
@@ -497,21 +494,17 @@ export function IncidentViewer() {
                 </div>
               )}
 
-              {/* Tags */}
               {selectedIncident.tags.length > 0 && (
                 <div className="modal-section">
                   <h3>Tags</h3>
                   <div className="incident-tags">
                     {selectedIncident.tags.map((tag, idx) => (
-                      <span key={idx} className="tag">
-                        {tag}
-                      </span>
+                      <span key={idx} className="tag">{tag}</span>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Metadata */}
               <div className="modal-section">
                 <h3>Metadata</h3>
                 <div className="metadata-grid">
@@ -523,10 +516,10 @@ export function IncidentViewer() {
                     <label>Updated</label>
                     <span>{formatDate(selectedIncident.updated_at)}</span>
                   </div>
-                    <div className="metadata-item">
-                      <label>Sender</label>
-                      <span>{selectedIncident.sender || 'Not provided'}</span>
-                    </div>
+                  <div className="metadata-item">
+                    <label>Sender</label>
+                    <span>{selectedIncident.sender || 'Not provided'}</span>
+                  </div>
                   <div className="metadata-item">
                     <label>ID</label>
                     <span className="metadata-id">{selectedIncident.id.substring(0, 8)}...</span>
@@ -534,7 +527,6 @@ export function IncidentViewer() {
                 </div>
               </div>
 
-              {/* Files / Attachments */}
               <div className="modal-section">
                 <h3>Attachments</h3>
                 {filesLoading ? (
@@ -543,33 +535,37 @@ export function IncidentViewer() {
                   <p style={{ color: '#999' }}>No files attached</p>
                 ) : (
                   <div className="files-list">
-                    {incidentFiles.map((file) => (
-                      <div key={file.id} className="file-item">
-                        <span className="file-icon">{file.name.split('.').pop()?.toUpperCase()}</span>
-                        <div className="file-info">
-                          <p className="file-name">{file.name}</p>
-                          <p className="file-meta">Updated: {new Date(file.updated_at).toLocaleDateString()}</p>
+                    {incidentFiles.map((file) => {
+                      const parts = (file.name || '').split('.');
+                      const ext = parts.length ? parts[parts.length - 1].toUpperCase() : '';
+                      const isPreviewable = file.name.endsWith('.pdf') || ['jpg','jpeg','png','gif','webp'].some(e => file.name.endsWith(e));
+                      return (
+                        <div key={file.id} className="file-item">
+                          <span className="file-icon">{ext}</span>
+                          <div className="file-info">
+                            <p className="file-name">{file.name}</p>
+                            <p className="file-meta">Updated: {new Date(file.updated_at).toLocaleDateString()}</p>
+                          </div>
+                          <div className="file-actions">
+                            {isPreviewable && (
+                              <button className="file-preview-btn" onClick={() => setPreviewFile(file.name)}>Preview</button>
+                            )}
+                            <button className="file-download-btn" onClick={async () => {
+                              try {
+                                const filePath = `incidents/${selectedIncident.id}/${file.name}`;
+                                const url = await generateSignedUrl(filePath, 3600);
+                                window.open(url, '_blank');
+                              } catch (err) {
+                                console.error('Download error', err);
+                                alert('Failed to download file');
+                              }
+                            }}>Download</button>
+                          </div>
                         </div>
-                        <div className="file-actions">
-                          {(file.name.endsWith('.pdf') || ['jpg','jpeg','png','gif','webp'].some(ext => file.name.endsWith(ext))) && (
-                            <button className="file-preview-btn" onClick={() => setPreviewFile(file.name)}>Preview</button>
-                          )}
-                          <button className="file-download-btn" onClick={async () => {
-                            try {
-                              const filePath = `incidents/${selectedIncident.id}/${file.name}`;
-                              const url = await generateSignedUrl(filePath, 3600);
-                              window.open(url, '_blank');
-                            } catch (err) {
-                              console.error('Download error', err);
-                              alert('Failed to download file');
-                            }
-                          }}>Download</button>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
-              </div>
               </div>
             </div>
           </div>

@@ -40,7 +40,7 @@ export function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'draft' | 'reviewed' | 'published'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'draft' | 'submitted' | 'reviewed' | 'published'>('all');
   const [selectedIncident, setSelectedIncident] = useState<IncidentItem | null>(null);
   const [incidentFiles, setIncidentFiles] = useState<FileItem[]>([]);
   const [filesLoading, setFilesLoading] = useState(false);
@@ -57,7 +57,7 @@ export function AdminDashboard() {
     } else if (quickView === 'resolved') {
       setStatusFilter('published');
     } else if (quickView === 'submitted') {
-      setStatusFilter('reviewed');
+      setStatusFilter('submitted');
     } else {
       setStatusFilter('all');
     }
@@ -509,6 +509,7 @@ export function AdminDashboard() {
           >
             <option value="all">All Statuses</option>
             <option value="draft">Draft</option>
+            <option value="submitted">Submitted</option>
             <option value="reviewed">Reviewed</option>
             <option value="published">Resolved</option>
           </select>
@@ -693,7 +694,7 @@ export function AdminDashboard() {
 
               {/* Action buttons */}
               <div className="modal-section" style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '24px', flexWrap: 'wrap' }}>
-                {selectedIncident.status === 'draft' && (
+                {(selectedIncident.status === 'draft' || (selectedIncident.status as string) === 'submitted') && (
                   <button
                     className="btn btn-success"
                     onClick={handleReviewIncident}

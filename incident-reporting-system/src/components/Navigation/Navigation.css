@@ -245,71 +245,102 @@
 
 /* Sidebar styles */
 .navigation-sidebar {
-  width: 220px;
+  width: 240px;
   height: 100vh;
   background: #ffffff;
   color: #222;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: 1rem 0.5rem;
+  padding: 1.5rem 1rem;
   box-sizing: border-box;
-  border-right: 1px solid #eee;
+  border-right: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  flex-shrink: 0;
 }
 
 .sidebar-brand {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0 1rem;
+  padding: 0 0.5rem;
+  margin-bottom: 2rem;
 }
 
 .sidebar-title {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   margin: 0;
   color: #BA0C2F;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  padding: 1rem;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
 }
 
 .sidebar-item {
   display: flex;
   gap: 0.75rem;
   align-items: center;
-  padding: 0.65rem 0.75rem;
+  padding: 0.75rem 0.875rem;
   background: transparent;
   border: none;
   color: #333;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 4px;
   text-align: left;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .sidebar-item:hover {
-  background: #f5f5f5;
+  background: #f0f0f0;
+  color: #BA0C2F;
+}
+
+.sidebar-item:active {
+  background: #e8e8e8;
 }
 
 .sidebar-item .sidebar-icon { color: #BA0C2F; }
 .sidebar-item .sidebar-label { color: #333; }
 
-.sidebar-icon { display: inline-block; }
+.sidebar-icon { 
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
 
-.sidebar-footer { padding: 1rem; margin-top: auto; }
+.sidebar-footer { 
+  padding: 0;
+  margin-top: auto;
+  margin-bottom: 0;
+}
 
 .signout-btn {
   width: 100%;
-  padding: 0.6rem;
+  padding: 0.75rem 0.875rem;
   border: none;
   background: #FFCD00;
   color: #222;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.signout-btn:hover {
+  background: #FFB81C;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 /* Top bar styles */
@@ -317,43 +348,97 @@
   height: 64px;
   background: #BA0C2F;
   color: white;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
   position: sticky;
   top: 0;
   z-index: 30;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  flex-shrink: 0;
+}
+
+.topbar-search {
+  flex: 1;
+  max-width: 500px;
 }
 
 .topbar-search input {
-  width: 420px;
-  max-width: 60%;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  border: none;
+  width: 100%;
+  padding: 0.5rem 0.875rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.2);
   background: rgba(255,255,255,0.1);
   color: #fff;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
 }
 
-.topbar-actions { display: flex; align-items: center; gap: 1rem; }
+.topbar-search input::placeholder {
+  color: rgba(255,255,255,0.6);
+}
 
-.profile-btn { background: transparent; border: none; cursor: pointer; padding: 0.25rem; }
+.topbar-search input:focus {
+  outline: none;
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.4);
+}
+
+.topbar-actions { 
+  display: flex; 
+  align-items: center; 
+  gap: 1rem;
+  position: relative;
+}
+
+.profile-btn { 
+  background: transparent; 
+  border: none; 
+  cursor: pointer; 
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.profile-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
 
 .profile-menu {
   position: absolute;
-  right: 1rem;
-  top: 64px;
-  margin-top: 0.5rem;
+  right: 0;
+  top: calc(100% + 0.5rem);
   background: white;
-  border: 1px solid #e6e6e6;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  border-radius: 6px;
-  min-width: 160px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  border-radius: 4px;
+  min-width: 180px;
+  z-index: 1000;
 }
 
-.profile-menu-item { display: block; padding: 0.6rem 1rem; background: transparent; border: none; width: 100%; text-align: left; cursor: pointer; }
+.profile-menu-item { 
+  display: block; 
+  padding: 0.75rem 1rem; 
+  background: transparent; 
+  border: none; 
+  width: 100%; 
+  text-align: left; 
+  cursor: pointer;
+  color: #333;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.profile-menu-item:hover {
+  background: #f5f5f5;
+  color: #BA0C2F;
+}
 
 /* Layout adjustments for protected layout */
 .protected-layout {

@@ -9,20 +9,22 @@
   display: flex;
   /* Flex direction column */
   flex-direction: column;
+  /* Flex: 1 to fill remaining space after topbar */
+  flex: 1;
   /* Gap between sections */
   gap: 2rem;
   /* Padding */
   padding: 2rem;
   /* Width 100% */
   width: 100%;
-  /* Min height */
-  min-height: 100%;
   /* Background color */
   background-color: #f8f9fa;
   /* Box sizing border box */
   box-sizing: border-box;
   /* Margin 0 */
   margin: 0;
+  /* Overflow auto for scrolling */
+  overflow: auto;
 }
 
 /* Welcome section */

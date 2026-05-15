@@ -6,18 +6,24 @@
 
 /* Main container */
 .upload-console-container {
+  /* Display flex to enable flex children */
+  display: flex;
+  /* Flex direction column */
+  flex-direction: column;
+  /* Flex: 1 to fill remaining space after topbar */
+  flex: 1;
   /* Padding */
   padding: 2rem;
   /* Max width */
   max-width: 1000px;
   /* Margin auto for centering */
   margin: 0 auto;
+  /* Width 100% */
+  width: 100%;
   /* Background color */
-  background: white;
-  /* Border radius */
-  border-radius: 8px;
-  /* Box shadow */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #f8f9fa;
+  /* Overflow auto for scrolling */
+  overflow: auto;
 }
 
 /* Console header */

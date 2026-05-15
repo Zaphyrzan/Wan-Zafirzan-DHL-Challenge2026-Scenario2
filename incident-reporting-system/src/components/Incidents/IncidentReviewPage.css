@@ -24,23 +24,25 @@
 
 .incident-review-eyebrow {
   margin: 0 0 0.25rem 0;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.75rem;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 2rem;
   color: #ba0c2f;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .incident-review-header h1 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.4rem;
   color: #1f2937;
+  font-weight: 700;
 }
 
 .incident-review-header p {
-  margin: 0.5rem 0 0;
+  margin: 0.35rem 0 0;
   color: #5f6368;
   max-width: 68ch;
+  font-size: 0.95rem;
 }
 
 .incident-review-actions-top {

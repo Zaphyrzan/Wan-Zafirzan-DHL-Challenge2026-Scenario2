@@ -425,6 +425,12 @@ export function AdminDashboard() {
   // JSX render
   return (
     <div className="admin-dashboard">
+      {/* Welcome section */}
+      <div className="dashboard-welcome">
+        <h1>Welcome, Admin</h1>
+        <p>Here's an overview of critical incidents requiring attention</p>
+      </div>
+
       {/* Active incidents by priority */}
       <div className="priority-chart-section">
         <div className="section-header">
@@ -457,11 +463,6 @@ export function AdminDashboard() {
             })}
           </div>
         </div>
-      </div>
-      {/* Welcome section */}
-      <div className="dashboard-welcome">
-        <h1>Welcome, Admin</h1>
-        <p>Here's an overview of critical incidents requiring attention</p>
       </div>
 
       {/* Critical incidents section */}

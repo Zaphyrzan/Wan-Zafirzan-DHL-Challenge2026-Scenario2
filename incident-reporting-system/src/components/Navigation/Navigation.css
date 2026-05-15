@@ -247,15 +247,15 @@
 .navigation-sidebar {
   width: 240px;
   height: 100vh;
-  background: #ffffff;
-  color: #222;
+  background: #BA0C2F;
+  color: #ffffff;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   padding: 1.5rem 1rem;
   box-sizing: border-box;
-  border-right: 1px solid #e0e0e0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border-right: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
   flex-shrink: 0;
   flex-grow: 0;
   min-width: 240px;
@@ -272,7 +272,7 @@
 .sidebar-title {
   font-size: 1.2rem;
   margin: 0;
-  color: #BA0C2F;
+  color: #ffffff;
   font-weight: 700;
   letter-spacing: 0.5px;
 }
@@ -292,7 +292,7 @@
   padding: 0.75rem 0.875rem;
   background: transparent;
   border: none;
-  color: #333;
+  color: #ffffff;
   cursor: pointer;
   border-radius: 4px;
   text-align: left;
@@ -302,16 +302,16 @@
 }
 
 .sidebar-item:hover {
-  background: #f0f0f0;
-  color: #BA0C2F;
+  background: rgba(255,255,255,0.12);
+  color: #FFCD00;
 }
 
 .sidebar-item:active {
-  background: #e8e8e8;
+  background: rgba(255,255,255,0.18);
 }
 
-.sidebar-item .sidebar-icon { color: #BA0C2F; }
-.sidebar-item .sidebar-label { color: #333; }
+.sidebar-item .sidebar-icon { color: #FFCD00; }
+.sidebar-item .sidebar-label { color: #ffffff; }
 
 .sidebar-icon { 
   display: inline-flex;
@@ -326,7 +326,7 @@
   height: 64px;
   background: #BA0C2F;
   color: white;
-  border-bottom: 1px solid rgba(0,0,0,0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.12);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -385,6 +385,10 @@
 
 .profile-btn:hover {
   background: rgba(255,255,255,0.1);
+}
+
+.profile-btn svg path {
+  stroke: #FFCD00;
 }
 
 .profile-menu {

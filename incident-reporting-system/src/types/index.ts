@@ -33,6 +33,9 @@ export interface Incident {
   created_by: string;
   // Optional sender information (e.g., email sender from RPA ingestion)
   sender?: string;
+
+  // Optional resolution notes added when an incident is closed
+  resolution_comments?: string;
   
   // User ID of the reviewer (if reviewed)
   reviewed_by?: string;

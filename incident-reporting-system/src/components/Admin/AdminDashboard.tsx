@@ -4,8 +4,8 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { getIncidents, updateIncident, deleteIncident } from '../../services/incidentService';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { getIncidents, updateIncident } from '../../services/incidentService';
 import { listIncidentFiles, generateSignedUrl } from '../../services/fileService';
 import type { Incident } from '../../types';
 import '../Dashboard/IncidentViewer.css';
@@ -32,6 +32,7 @@ interface FileItem {
  */
 export function AdminDashboard() {
   const location = useLocation();
+  const navigate = useNavigate();
   // State
   const [criticalIncidents, setCriticalIncidents] = useState<IncidentItem[]>([]);
   const [allIncidents, setAllIncidents] = useState<IncidentItem[]>([]);
@@ -368,33 +369,12 @@ export function AdminDashboard() {
   };
 
   /**
-   * Delete an incident
+   * Open the incident review page
    */
-  const handleDeleteIncident = async () => {
+  const handleReviewIncident = () => {
     if (!selectedIncident) return;
 
-    // Confirm deletion
-    if (!window.confirm('Are you sure you want to delete this incident? This action cannot be undone.')) {
-      return;
-    }
-
-    try {
-      setIsUpdating(true);
-      
-      // Delete the incident
-      await deleteIncident(selectedIncident.id);
-
-      // Close the modal
-      setSelectedIncident(null);
-
-      // Refresh incidents list
-      await fetchIncidents();
-    } catch (err: any) {
-      console.error('Error deleting incident:', err);
-      alert('Failed to delete incident');
-    } finally {
-      setIsUpdating(false);
-    }
+    navigate(`/incidents/review/${selectedIncident.id}`);
   };
 
   const getFilteredIncidents = (): IncidentItem[] => {
@@ -822,14 +802,14 @@ export function AdminDashboard() {
                   </span>
                 )}
                 
-                {/* Delete button - always available */}
+                {/* Review button - opens the dedicated review page */}
                 <button
-                  className="btn btn-danger"
-                  onClick={handleDeleteIncident}
+                  className="btn btn-primary"
+                  onClick={handleReviewIncident}
                   disabled={isUpdating}
                   style={{
                     padding: '10px 16px',
-                    backgroundColor: '#ef4444',
+                    backgroundColor: '#BA0C2F',
                     color: 'white',
                     border: 'none',
                     borderRadius: '6px',
@@ -840,7 +820,7 @@ export function AdminDashboard() {
                     marginLeft: 'auto'
                   }}
                 >
-                  {isUpdating ? 'Deleting...' : '✕ Delete'}
+                  Review
                 </button>
               </div>
             </div>

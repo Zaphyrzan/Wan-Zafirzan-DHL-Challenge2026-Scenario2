@@ -33,7 +33,8 @@ export default async function handler(req, res) {
       sender,
       file_content,
       file_name,
-      file_type
+      file_type,
+      file_url
     } = req.body;
 
     // Validate title
@@ -93,6 +94,7 @@ export default async function handler(req, res) {
       tags: tags || [],
       created_by: userId,
       ...(sender ? { sender } : {}),
+      ...(file_url ? { file_url } : {}),
     };
 
     const incidentRes = await fetch(`${supabaseUrl}/rest/v1/incidents`, {
@@ -178,7 +180,7 @@ export default async function handler(req, res) {
     return res.status(201).json({
       success: true,
       incident_id: incidentId,
-      file_url: fileUrl,
+      file_url: fileUrl || file_url || null,
       message: 'Incident created successfully',
       sender: sender || null,
     });

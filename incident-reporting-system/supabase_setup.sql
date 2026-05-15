@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS incidents (
   status VARCHAR(50) DEFAULT 'draft',
   priority VARCHAR(50) DEFAULT 'medium',
   tags TEXT[] DEFAULT '{}',
+  sender VARCHAR(255),
+  resolution_comments TEXT,
   created_by UUID NOT NULL,
   reviewed_by UUID,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

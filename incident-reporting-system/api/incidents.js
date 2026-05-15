@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const { title, description, priority, tags, source, external_id, sender } = req.body;
+    const { title, description, priority, tags, source, external_id, sender, file_url } = req.body;
 
     if (!title?.trim()) {
       return res.status(400).json({ error: 'Title required' });
@@ -80,6 +80,7 @@ export default async function handler(req, res) {
         tags: tagsList,
         created_by: userId,
         ...(sender ? { sender } : {}),
+        ...(file_url ? { file_url } : {}),
       })
       .select('id, sender')
       .single();
@@ -107,6 +108,7 @@ export default async function handler(req, res) {
       data: {
         id: incident?.id,
         sender: incident?.sender || sender,
+        file_url: incident?.file_url || file_url || null,
         title,
         description,
         priority,

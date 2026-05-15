@@ -13,6 +13,7 @@ import { UploadConsole } from './components/UploadConsole/UploadConsole';
 import { Navigation } from './components/Navigation/Navigation';
 import { TopBar } from './components/Navigation/TopBar';
 import { IncidentListPage } from './components/Incidents/IncidentListPage';
+import { IncidentReviewPage } from './components/Incidents/IncidentReviewPage';
 import './styles/App.css';
 
 /**
@@ -178,6 +179,17 @@ function App() {
                     title="Resolved Incidents"
                     subtitle="Closed and published incidents"
                   />
+                </ProtectedLayout>
+              </AuthGuard>
+            }
+          />
+
+          <Route
+            path="/incidents/review/:incidentId"
+            element={
+              <AuthGuard requiredRole="reviewer">
+                <ProtectedLayout>
+                  <IncidentReviewPage />
                 </ProtectedLayout>
               </AuthGuard>
             }

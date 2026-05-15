@@ -251,7 +251,7 @@
   color: #222;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 1rem 0.5rem;
   box-sizing: border-box;
   border-right: 1px solid #eee;
@@ -295,9 +295,12 @@
   background: #f5f5f5;
 }
 
+.sidebar-item .sidebar-icon { color: #BA0C2F; }
+.sidebar-item .sidebar-label { color: #333; }
+
 .sidebar-icon { display: inline-block; }
 
-.sidebar-footer { padding: 1rem; }
+.sidebar-footer { padding: 1rem; margin-top: auto; }
 
 .signout-btn {
   width: 100%;

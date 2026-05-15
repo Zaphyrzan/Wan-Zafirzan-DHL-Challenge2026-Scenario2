@@ -720,12 +720,10 @@ export function AdminDashboard() {
                       {selectedIncident.id.substring(0, 8)}...
                     </span>
                   </div>
-                  {selectedIncident.sender && (
-                    <div className="metadata-item">
-                      <label>Sender</label>
-                      <span>{selectedIncident.sender}</span>
-                    </div>
-                  )}
+                  <div className="metadata-item">
+                    <label>Sender</label>
+                    <span>{selectedIncident.sender || 'Not provided'}</span>
+                  </div>
                 </div>
               </div>
 

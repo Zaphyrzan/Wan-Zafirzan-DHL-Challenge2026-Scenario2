@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { listIncidentFiles, generateSignedUrl } from '../../services/fileService';
 import { useAuthContext } from '../../context/AuthContext';
 import * as incidentService from '../../services/incidentService';
 import './IncidentViewer.css';
@@ -70,6 +71,76 @@ export function IncidentViewer() {
 
   // Selected incident for detail view
   const [selectedIncident, setSelectedIncident] = useState<IncidentItem | null>(null);
+  const [incidentFiles, setIncidentFiles] = useState<any[]>([]);
+  const [filesLoading, setFilesLoading] = useState(false);
+  const [previewFile, setPreviewFile] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!selectedIncident) {
+      setIncidentFiles([]);
+      setPreviewFile(null);
+      return;
+    }
+
+    const fetchFiles = async () => {
+      try {
+        setFilesLoading(true);
+        const files = await listIncidentFiles(selectedIncident.id);
+        setIncidentFiles(files || []);
+      } catch (err) {
+        console.error('Error listing files for incident:', err);
+        setIncidentFiles([]);
+      } finally {
+        setFilesLoading(false);
+      }
+    };
+
+    fetchFiles();
+  }, [selectedIncident]);
+
+  const PdfPreviewComponent = ({ fileName }: { fileName: string }) => {
+    const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+
+    useEffect(() => {
+      let mounted = true;
+      const load = async () => {
+        if (!selectedIncident) return;
+        try {
+          const url = await generateSignedUrl(`incidents/${selectedIncident.id}/${fileName}`, 3600);
+          if (mounted) setPdfUrl(url);
+        } catch (err) {
+          console.error('Error getting pdf url', err);
+        }
+      };
+      load();
+      return () => { mounted = false; };
+    }, [fileName]);
+
+    if (!pdfUrl) return <p>Loading PDF...</p>;
+    return <iframe src={pdfUrl} style={{ width: '100%', height: 500, border: 'none' }} title="PDF Preview" />;
+  };
+
+  const ImagePreviewComponent = ({ fileName }: { fileName: string }) => {
+    const [imgUrl, setImgUrl] = useState<string | null>(null);
+
+    useEffect(() => {
+      let mounted = true;
+      const load = async () => {
+        if (!selectedIncident) return;
+        try {
+          const url = await generateSignedUrl(`incidents/${selectedIncident.id}/${fileName}`, 3600);
+          if (mounted) setImgUrl(url);
+        } catch (err) {
+          console.error('Error getting image url', err);
+        }
+      };
+      load();
+      return () => { mounted = false; };
+    }, [fileName]);
+
+    if (!imgUrl) return <p>Loading image...</p>;
+    return <img src={imgUrl} alt={fileName} style={{ width: '100%', maxHeight: 500, objectFit: 'contain' }} />;
+  };
 
   /**
    * Fetch incidents on component mount
@@ -452,18 +523,70 @@ export function IncidentViewer() {
                     <label>Updated</label>
                     <span>{formatDate(selectedIncident.updated_at)}</span>
                   </div>
-                    {selectedIncident.sender && (
-                      <div className="metadata-item">
-                        <label>Sender</label>
-                        <span>{selectedIncident.sender}</span>
-                      </div>
-                    )}
+                    <div className="metadata-item">
+                      <label>Sender</label>
+                      <span>{selectedIncident.sender || 'Not provided'}</span>
+                    </div>
                   <div className="metadata-item">
                     <label>ID</label>
                     <span className="metadata-id">{selectedIncident.id.substring(0, 8)}...</span>
                   </div>
                 </div>
               </div>
+
+              {/* Files / Attachments */}
+              <div className="modal-section">
+                <h3>Attachments</h3>
+                {filesLoading ? (
+                  <p>Loading files...</p>
+                ) : incidentFiles.length === 0 ? (
+                  <p style={{ color: '#999' }}>No files attached</p>
+                ) : (
+                  <div className="files-list">
+                    {incidentFiles.map((file) => (
+                      <div key={file.id} className="file-item">
+                        <span className="file-icon">{file.name.split('.').pop()?.toUpperCase()}</span>
+                        <div className="file-info">
+                          <p className="file-name">{file.name}</p>
+                          <p className="file-meta">Updated: {new Date(file.updated_at).toLocaleDateString()}</p>
+                        </div>
+                        <div className="file-actions">
+                          {(file.name.endsWith('.pdf') || ['jpg','jpeg','png','gif','webp'].some(ext => file.name.endsWith(ext))) && (
+                            <button className="file-preview-btn" onClick={() => setPreviewFile(file.name)}>Preview</button>
+                          )}
+                          <button className="file-download-btn" onClick={async () => {
+                            try {
+                              const filePath = `incidents/${selectedIncident.id}/${file.name}`;
+                              const url = await generateSignedUrl(filePath, 3600);
+                              window.open(url, '_blank');
+                            } catch (err) {
+                              console.error('Download error', err);
+                              alert('Failed to download file');
+                            }
+                          }}>Download</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* File preview modal */}
+      {previewFile && (
+        <div className="file-preview-modal" onClick={() => setPreviewFile(null)}>
+          <div className="file-preview-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close-btn" onClick={() => setPreviewFile(null)}>×</button>
+            <div className="file-preview-body">
+              {previewFile.endsWith('.pdf') ? (
+                <PdfPreviewComponent fileName={previewFile} />
+              ) : (
+                <ImagePreviewComponent fileName={previewFile} />
+              )}
             </div>
           </div>
         </div>

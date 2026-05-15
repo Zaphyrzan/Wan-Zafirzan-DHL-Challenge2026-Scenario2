@@ -65,7 +65,7 @@ export function Navigation() {
   return (
     <aside className="navigation-sidebar">
       <div className="sidebar-brand">
-        <img src="/dhl-logo.svg" alt="DHL logo" className="dhl-logo" />
+        <img src="/dhl-logo.png" alt="DHL logo" className="dhl-logo" />
         <div>
           <h1 className="sidebar-title">DHL Incident System</h1>
         </div>

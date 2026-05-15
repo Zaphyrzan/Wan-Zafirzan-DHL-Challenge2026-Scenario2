@@ -9,6 +9,7 @@ import { listIncidentFiles, generateSignedUrl } from '../../services/fileService
 import type { Incident } from '../../types';
 import '../Dashboard/IncidentViewer.css';
 import './AdminDashboard.css';
+import { PieChart } from '../Charts/PieChart';
 
 /**
  * Incident item interface - use actual Incident type from types/index.ts
@@ -428,6 +429,40 @@ export function AdminDashboard() {
       <div className="dashboard-welcome">
         <h1>Welcome, Admin</h1>
         <p>Here's an overview of critical incidents requiring attention</p>
+      </div>
+
+      {/* Active incidents by priority */}
+      <div className="priority-chart-section">
+        <div className="section-header">
+          <h2>Active Incidents by Priority</h2>
+          <span className="incident-count">{allIncidents.filter(i => i.status !== 'published').length}</span>
+        </div>
+
+        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+          <PieChart
+            data={['critical', 'high', 'medium', 'low'].map((p) => ({
+              label: p,
+              value: allIncidents.filter(i => i.priority === p && i.status !== 'published').length,
+              color: p === 'critical' ? '#991B1B' : p === 'high' ? '#92400e' : p === 'medium' ? '#1e40af' : '#166534'
+            }))}
+            size={160}
+            innerRadius={48}
+          />
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {['critical', 'high', 'medium', 'low'].map((p) => {
+              const count = allIncidents.filter(i => i.priority === p && i.status !== 'published').length;
+              const color = p === 'critical' ? '#991B1B' : p === 'high' ? '#92400e' : p === 'medium' ? '#1e40af' : '#166534';
+              return (
+                <div key={p} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ width: 12, height: 12, background: color, display: 'inline-block', borderRadius: 3 }}></span>
+                  <strong style={{ textTransform: 'capitalize', minWidth: 80 }}>{p}</strong>
+                  <span style={{ color: '#666' }}>{count} active</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* Critical incidents section */}

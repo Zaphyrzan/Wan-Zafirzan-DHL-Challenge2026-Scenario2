@@ -285,6 +285,49 @@
   margin: 0;
 }
 
+.sidebar-module-group {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sidebar-module-title {
+  margin: 0 0 0.35rem 0;
+  padding: 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.72);
+}
+
+.sidebar-module-item {
+  width: 100%;
+  padding: 0.7rem 0.875rem;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.sidebar-module-item:hover {
+  background: rgba(255,255,255,0.14);
+  color: #FFCD00;
+  border-color: rgba(255,205,0,0.45);
+}
+
+.sidebar-module-label {
+  display: block;
+}
+
 .sidebar-item {
   display: flex;
   gap: 0.75rem;

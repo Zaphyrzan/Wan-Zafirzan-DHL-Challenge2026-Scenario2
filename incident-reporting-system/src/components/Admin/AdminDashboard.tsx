@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { getIncidents, updateIncident, deleteIncident } from '../../services/incidentService';
 import { listIncidentFiles, generateSignedUrl } from '../../services/fileService';
 import type { Incident } from '../../types';
@@ -30,6 +31,7 @@ interface FileItem {
  * Admin Dashboard Component
  */
 export function AdminDashboard() {
+  const location = useLocation();
   // State
   const [criticalIncidents, setCriticalIncidents] = useState<IncidentItem[]>([]);
   const [allIncidents, setAllIncidents] = useState<IncidentItem[]>([]);
@@ -42,10 +44,31 @@ export function AdminDashboard() {
   const [filesLoading, setFilesLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
+  const quickView = new URLSearchParams(location.search).get('view');
+
   // Fetch incidents on mount
   useEffect(() => {
     fetchIncidents();
   }, []);
+
+  useEffect(() => {
+    if (quickView === 'draft') {
+      setStatusFilter('draft');
+    } else if (quickView === 'resolved') {
+      setStatusFilter('published');
+    } else if (quickView === 'submitted') {
+      setStatusFilter('reviewed');
+    } else {
+      setStatusFilter('all');
+    }
+
+    if (quickView) {
+      document.getElementById('all-incidents-section')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }, [quickView]);
 
   /**
    * Fetch all incidents
@@ -513,6 +536,12 @@ export function AdminDashboard() {
 
                   <p className="critical-card-description">{incident.description}</p>
 
+                  {incident.sender && (
+                    <p className="critical-card-sender">
+                      Sender: {incident.sender}
+                    </p>
+                  )}
+
                   <div className="critical-card-footer">
                     <span className="created-date">
                       {formatDate(incident.created_at)}
@@ -529,7 +558,7 @@ export function AdminDashboard() {
       </div>
 
       {/* All incidents section with filters */}
-      <div className="all-incidents-section">
+      <div className="all-incidents-section" id="all-incidents-section">
         <div className="section-header">
           <h2>All Incidents</h2>
           <span className="incident-count">{getFilteredIncidents().length} incidents</span>
@@ -593,6 +622,10 @@ export function AdminDashboard() {
 
                 {/* Description */}
                 <p className="incident-card-description">{incident.description}</p>
+
+                {incident.sender && (
+                  <p className="incident-card-sender">Sender: {incident.sender}</p>
+                )}
 
                 {/* Tags */}
                 {incident.tags.length > 0 && (
@@ -687,6 +720,12 @@ export function AdminDashboard() {
                       {selectedIncident.id.substring(0, 8)}...
                     </span>
                   </div>
+                  {selectedIncident.sender && (
+                    <div className="metadata-item">
+                      <label>Sender</label>
+                      <span>{selectedIncident.sender}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 

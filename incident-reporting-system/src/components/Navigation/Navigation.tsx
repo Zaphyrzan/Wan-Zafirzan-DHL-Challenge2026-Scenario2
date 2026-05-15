@@ -20,6 +20,18 @@ export function Navigation() {
     navigate(path);
   };
 
+  /**
+   * Handle dashboard quick view navigation
+   */
+  const handleViewNavigation = (view?: string) => {
+    if (!view || view === 'all') {
+      navigate('/');
+      return;
+    }
+
+    navigate(`/?view=${view}`);
+  };
+
   // JSX render
   return (
     <aside className="navigation-sidebar">
@@ -48,6 +60,22 @@ export function Navigation() {
           <span className="sidebar-label">Upload</span>
         </button>
       </nav>
+
+      <div className="sidebar-module-group">
+        <p className="sidebar-module-title">Incident Views</p>
+        <button className="sidebar-module-item" onClick={() => handleViewNavigation('all')} title="All incidents">
+          <span className="sidebar-module-label">Incident Overview</span>
+        </button>
+        <button className="sidebar-module-item" onClick={() => handleViewNavigation('submitted')} title="Submitted incidents">
+          <span className="sidebar-module-label">Submitted Incidents</span>
+        </button>
+        <button className="sidebar-module-item" onClick={() => handleViewNavigation('draft')} title="Draft incidents">
+          <span className="sidebar-module-label">Draft</span>
+        </button>
+        <button className="sidebar-module-item" onClick={() => handleViewNavigation('resolved')} title="Resolved incidents">
+          <span className="sidebar-module-label">Resolved</span>
+        </button>
+      </div>
     </aside>
   );
 }

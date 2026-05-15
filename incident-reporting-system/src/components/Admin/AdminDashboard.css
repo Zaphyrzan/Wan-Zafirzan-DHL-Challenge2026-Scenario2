@@ -241,6 +241,14 @@
   line-height: 1.5;
 }
 
+/* Critical card sender */
+.critical-card-sender {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #9f1239;
+  font-weight: 600;
+}
+
 /* Critical card footer */
 .critical-card-footer {
   /* Display flex */
@@ -361,6 +369,14 @@
   margin: 0;
   /* Line height */
   line-height: 1.4;
+}
+
+/* Incident card sender */
+.incident-card-sender {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #9f1239;
+  font-weight: 600;
 }
 
 /* Badge styles */

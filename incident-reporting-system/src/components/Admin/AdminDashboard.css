@@ -12,9 +12,9 @@
   /* Flex: 1 to fill remaining space after topbar */
   flex: 1;
   /* Gap between sections */
-  gap: 2.5rem;
+  gap: 2rem;
   /* Padding - generous for professional look */
-  padding: 2.5rem 3rem;
+  padding: 2rem;
   /* Width 100% */
   width: 100%;
   /* Background color */
@@ -30,7 +30,7 @@
 /* Welcome section */
 .dashboard-welcome {
   /* Padding */
-  padding: 2.5rem;
+  padding: 2rem;
   /* Background color */
   background: linear-gradient(135deg, #BA0C2F 0%, #8B081F 100%);
   /* Text color white */
@@ -71,7 +71,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  padding: 2rem;
+  padding: 1.5rem;
   background: white;
   border: 1px solid #e0e0e0;
   border-radius: 2px;

@@ -446,10 +446,9 @@
 .protected-layout {
   display: flex;
   flex-direction: row;
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
   margin: 0;
-  overflow: hidden;
 }
 
 .protected-content {
@@ -457,10 +456,6 @@
   display: flex;
   flex-direction: column;
   background: #f8f9fa;
-  width: calc(100% - 240px);
-  h: 100%;
-  height: auto;
-  min-height: 100vh;
   margin: 0;
   padding: 0;
   box-sizing: border-box;

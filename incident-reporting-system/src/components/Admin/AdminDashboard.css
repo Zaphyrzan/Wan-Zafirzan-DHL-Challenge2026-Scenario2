@@ -9,22 +9,20 @@
   display: flex;
   /* Flex direction column */
   flex-direction: column;
-  /* Flex: 1 to fill remaining space after topbar */
-  flex: 1;
   /* Gap between sections */
   gap: 2rem;
-  /* Padding - generous for professional look */
+  /* Padding */
   padding: 2rem;
   /* Width 100% */
   width: 100%;
+  /* Min height */
+  min-height: 100%;
   /* Background color */
   background-color: #f8f9fa;
   /* Box sizing border box */
   box-sizing: border-box;
   /* Margin 0 */
   margin: 0;
-  /* Overflow auto for scrolling */
-  overflow: auto;
 }
 
 /* Welcome section */
@@ -35,16 +33,16 @@
   background: linear-gradient(135deg, #BA0C2F 0%, #8B081F 100%);
   /* Text color white */
   color: white;
-  /* Border radius - professional minimal */
-  border-radius: 2px;
-  /* Box shadow - subtle professional */
+  /* Border radius */
+  border-radius: 8px;
+  /* Box shadow */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Welcome heading */
 .dashboard-welcome h1 {
   /* Margin */
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0.5rem 0;
   /* Font size */
   font-size: 2.5rem;
   /* Font weight */
@@ -60,28 +58,9 @@
   /* Margin */
   margin: 0;
   /* Font size */
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   /* Opacity */
   opacity: 0.95;
-}
-
-/* Priority chart section */
-.priority-chart-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 2px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-}
-
-.priority-chart-legend { 
-  display: flex; 
-  gap: 1.5rem; 
-  align-items: center;
-  flex-wrap: wrap;
 }
 
 /* Section container */
@@ -240,14 +219,6 @@
   line-height: 1.5;
 }
 
-/* Critical card sender */
-.critical-card-sender {
-  margin: 0;
-  font-size: 0.85rem;
-  color: #9f1239;
-  font-weight: 600;
-}
-
 /* Critical card footer */
 .critical-card-footer {
   /* Display flex */
@@ -368,14 +339,6 @@
   margin: 0;
   /* Line height */
   line-height: 1.4;
-}
-
-/* Incident card sender */
-.incident-card-sender {
-  margin: 0;
-  font-size: 0.85rem;
-  color: #9f1239;
-  font-weight: 600;
 }
 
 /* Badge styles */

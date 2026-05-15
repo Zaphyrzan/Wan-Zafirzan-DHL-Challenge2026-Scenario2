@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getIncidents } from '../../services/incidentService';
 import { listIncidentFiles, generateSignedUrl } from '../../services/fileService';
 import type { Incident } from '../../types';
@@ -32,6 +32,8 @@ export function IncidentListPage({ view, title, subtitle }: IncidentListPageProp
   const [filesLoading, setFilesLoading] = useState(false);
   const [previewFile, setPreviewFile] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const searchQuery = (searchParams.get('q') || '').trim().toLowerCase();
 
   useEffect(() => {
     const fetchIncidents = async () => {
@@ -77,23 +79,41 @@ export function IncidentListPage({ view, title, subtitle }: IncidentListPageProp
   }, [selectedIncident]);
 
   const filteredIncidents = useMemo(() => {
-    if (view === 'all') {
-      return incidents;
-    }
+    let viewFiltered: Incident[];
 
-    if (view === 'submitted') {
-      return incidents.filter((incident) => {
+    if (view === 'all') {
+      viewFiltered = incidents;
+    } else if (view === 'submitted') {
+      viewFiltered = incidents.filter((incident) => {
         const status = incident.status as string;
         return status === 'submitted' || status === 'reviewed';
       });
+    } else if (view === 'draft') {
+      viewFiltered = incidents.filter((incident) => (incident.status as string) === 'draft');
+    } else {
+      viewFiltered = incidents.filter((incident) => (incident.status as string) === 'published');
     }
 
-    if (view === 'draft') {
-      return incidents.filter((incident) => (incident.status as string) === 'draft');
+    if (!searchQuery) {
+      return viewFiltered;
     }
 
-    return incidents.filter((incident) => (incident.status as string) === 'published');
-  }, [incidents, view]);
+    return viewFiltered.filter((incident) => {
+      const title = (incident.title || '').toLowerCase();
+      const description = (incident.description || '').toLowerCase();
+      const sender = (incident.sender || '').toLowerCase();
+      const tags = Array.isArray(incident.tags) ? incident.tags.join(' ').toLowerCase() : '';
+      const id = (incident.id || '').toLowerCase();
+
+      return (
+        title.includes(searchQuery) ||
+        description.includes(searchQuery) ||
+        sender.includes(searchQuery) ||
+        tags.includes(searchQuery) ||
+        id.includes(searchQuery)
+      );
+    });
+  }, [incidents, view, searchQuery]);
 
   // Sorting options
   const [sortOption, setSortOption] = useState<'priority_desc' | 'priority_asc' | 'date_desc' | 'date_asc'>('date_desc');

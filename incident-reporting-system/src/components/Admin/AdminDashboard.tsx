@@ -4,14 +4,11 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { getIncidents, updateIncident } from '../../services/incidentService';
+import { getIncidents, updateIncident, deleteIncident } from '../../services/incidentService';
 import { listIncidentFiles, generateSignedUrl } from '../../services/fileService';
 import type { Incident } from '../../types';
 import '../Dashboard/IncidentViewer.css';
 import './AdminDashboard.css';
-import { PieChart } from '../Charts/PieChart';
-import { getStatusLabelUpper } from '../../utils/status';
 
 /**
  * Incident item interface - use actual Incident type from types/index.ts
@@ -32,8 +29,6 @@ interface FileItem {
  * Admin Dashboard Component
  */
 export function AdminDashboard() {
-  const location = useLocation();
-  const navigate = useNavigate();
   // State
   const [criticalIncidents, setCriticalIncidents] = useState<IncidentItem[]>([]);
   const [allIncidents, setAllIncidents] = useState<IncidentItem[]>([]);
@@ -46,31 +41,10 @@ export function AdminDashboard() {
   const [filesLoading, setFilesLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const quickView = new URLSearchParams(location.search).get('view');
-
   // Fetch incidents on mount
   useEffect(() => {
     fetchIncidents();
   }, []);
-
-  useEffect(() => {
-    if (quickView === 'draft') {
-      setStatusFilter('draft');
-    } else if (quickView === 'resolved') {
-      setStatusFilter('published');
-    } else if (quickView === 'submitted') {
-      setStatusFilter('reviewed');
-    } else {
-      setStatusFilter('all');
-    }
-
-    if (quickView) {
-      document.getElementById('all-incidents-section')?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
-  }, [quickView]);
 
   /**
    * Fetch all incidents
@@ -91,7 +65,7 @@ export function AdminDashboard() {
 
       // Filter critical and high priority incidents (for dashboard)
       const critical = incidentsList.filter(
-        (inc) => (inc.priority === 'critical' || inc.priority === 'high') && inc.status !== 'published'
+        (inc) => inc.priority === 'critical' || inc.priority === 'high'
       );
 
       // Sort by priority (critical first) then by created_at (newest first)
@@ -344,15 +318,59 @@ export function AdminDashboard() {
   /**
    * Resolve/Publish an incident
    */
-  
-
-  /**
-   * Open the incident review page
-   */
-  const handleReviewIncident = () => {
+  const handleResolveIncident = async () => {
     if (!selectedIncident) return;
 
-    navigate(`/incidents/review/${selectedIncident.id}`);
+    try {
+      setIsUpdating(true);
+      
+      // Update incident status to published (resolved)
+      await updateIncident(selectedIncident.id, { status: 'published', published_at: new Date().toISOString() });
+
+      // Update the selected incident in the UI
+      setSelectedIncident({
+        ...selectedIncident,
+        status: 'published'
+      });
+
+      // Refresh incidents list
+      await fetchIncidents();
+    } catch (err: any) {
+      console.error('Error resolving incident:', err);
+      alert('Failed to resolve incident');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  /**
+   * Delete an incident
+   */
+  const handleDeleteIncident = async () => {
+    if (!selectedIncident) return;
+
+    // Confirm deletion
+    if (!window.confirm('Are you sure you want to delete this incident? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      setIsUpdating(true);
+      
+      // Delete the incident
+      await deleteIncident(selectedIncident.id);
+
+      // Close the modal
+      setSelectedIncident(null);
+
+      // Refresh incidents list
+      await fetchIncidents();
+    } catch (err: any) {
+      console.error('Error deleting incident:', err);
+      alert('Failed to delete incident');
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const getFilteredIncidents = (): IncidentItem[] => {
@@ -412,40 +430,6 @@ export function AdminDashboard() {
         <p>Here's an overview of critical incidents requiring attention</p>
       </div>
 
-      {/* Active incidents by priority */}
-      <div className="priority-chart-section">
-        <div className="section-header">
-          <h2>Active Incidents by Priority</h2>
-          <span className="incident-count">{allIncidents.filter(i => i.status !== 'published').length}</span>
-        </div>
-
-        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-          <PieChart
-            data={['critical', 'high', 'medium', 'low'].map((p) => ({
-              label: p,
-              value: allIncidents.filter(i => i.priority === p && i.status !== 'published').length,
-              color: p === 'critical' ? '#991B1B' : p === 'high' ? '#92400e' : p === 'medium' ? '#1e40af' : '#166534'
-            }))}
-            size={160}
-            innerRadius={48}
-          />
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {['critical','high','medium','low'].map((p) => {
-              const count = allIncidents.filter(i => i.priority === p && i.status !== 'published').length;
-              const color = p === 'critical' ? '#991B1B' : p === 'high' ? '#92400e' : p === 'medium' ? '#1e40af' : '#166534';
-              return (
-                <div key={p} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ width: 12, height: 12, background: color, display: 'inline-block', borderRadius: 3 }}></span>
-                  <strong style={{ textTransform: 'capitalize', minWidth: 80 }}>{p}</strong>
-                  <span style={{ color: '#666' }}>{count} active</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
       {/* Critical incidents section */}
       <div className="critical-section">
         <div className="section-header">
@@ -494,19 +478,13 @@ export function AdminDashboard() {
 
                   <p className="critical-card-description">{incident.description}</p>
 
-                  {incident.sender && (
-                    <p className="critical-card-sender">
-                      Sender: {incident.sender}
-                    </p>
-                  )}
-
                   <div className="critical-card-footer">
                     <span className="created-date">
                       {formatDate(incident.created_at)}
                     </span>
-                      <span className={`status-badge status-${incident.status}`}>
-                        {getStatusLabelUpper(incident.status)}
-                      </span>
+                    <span className={`status-badge status-${incident.status}`}>
+                      {incident.status.replace(/_/g, ' ').toUpperCase()}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -516,7 +494,7 @@ export function AdminDashboard() {
       </div>
 
       {/* All incidents section with filters */}
-      <div className="all-incidents-section" id="all-incidents-section">
+      <div className="all-incidents-section">
         <div className="section-header">
           <h2>All Incidents</h2>
           <span className="incident-count">{getFilteredIncidents().length} incidents</span>
@@ -567,21 +545,19 @@ export function AdminDashboard() {
                 <div className="incident-card-header">
                   <h3 className="incident-card-title">{incident.title}</h3>
                   <div className="incident-card-badges">
-                      <span className={`priority-badge priority-${incident.priority}`}>
-                        {incident.priority.toUpperCase()}
-                      </span>
-                      <span className={`status-badge status-${incident.status}`}>
-                        {getStatusLabelUpper(incident.status)}
-                      </span>
+                    <span
+                      className={`priority-badge priority-${incident.priority}`}
+                    >
+                      {incident.priority.toUpperCase()}
+                    </span>
+                    <span className={`status-badge status-${incident.status}`}>
+                      {incident.status.replace(/_/g, ' ').toUpperCase()}
+                    </span>
                   </div>
                 </div>
 
                 {/* Description */}
                 <p className="incident-card-description">{incident.description}</p>
-
-                {incident.sender && (
-                  <p className="incident-card-sender">Sender: {incident.sender}</p>
-                )}
 
                 {/* Tags */}
                 {incident.tags.length > 0 && (
@@ -631,31 +607,8 @@ export function AdminDashboard() {
                 <span
                   className={`status-badge status-${selectedIncident.status}`}
                 >
-                  {getStatusLabelUpper(selectedIncident.status)}
+                  {selectedIncident.status.replace(/_/g, ' ').toUpperCase()}
                 </span>
-                {/* Top-right actions: show prominent Review & Approve for drafts */}
-                {selectedIncident.status === 'draft' && (
-                  <div style={{ marginLeft: 12 }}>
-                    <button
-                      className="btn btn-success"
-                      onClick={handleReviewIncident}
-                      disabled={isUpdating}
-                      style={{
-                        padding: '10px 16px',
-                        backgroundColor: '#10b981',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '6px',
-                        cursor: isUpdating ? 'not-allowed' : 'pointer',
-                        opacity: isUpdating ? 0.6 : 1,
-                        fontSize: '14px',
-                        fontWeight: 600
-                      }}
-                    >
-                      {isUpdating ? 'Reviewing...' : '✓ Review & Approve'}
-                    </button>
-                  </div>
-                )}
               </div>
             </div>
 
@@ -698,10 +651,6 @@ export function AdminDashboard() {
                     <span className="metadata-id">
                       {selectedIncident.id.substring(0, 8)}...
                     </span>
-                  </div>
-                  <div className="metadata-item">
-                    <label>Sender</label>
-                    <span>{selectedIncident.sender || 'Not provided'}</span>
                   </div>
                 </div>
               </div>
@@ -774,7 +723,7 @@ export function AdminDashboard() {
                   <>
                     <button
                       className="btn btn-primary"
-                      onClick={handleReviewIncident}
+                      onClick={handleResolveIncident}
                       disabled={isUpdating}
                       style={{
                         padding: '10px 16px',
@@ -788,7 +737,7 @@ export function AdminDashboard() {
                         fontWeight: '600'
                       }}
                     >
-                      {isUpdating ? 'Opening review...' : '✓ Resolve & Close'}
+                      {isUpdating ? 'Resolving...' : '✓ Resolve & Close'}
                     </button>
                     <span style={{ padding: '10px 16px', color: '#10b981', fontWeight: 'bold' }}>
                       ✓ Reviewed
@@ -801,7 +750,26 @@ export function AdminDashboard() {
                   </span>
                 )}
                 
-                {/* Footer actions updated - Review moved to header for visibility */}
+                {/* Delete button - always available */}
+                <button
+                  className="btn btn-danger"
+                  onClick={handleDeleteIncident}
+                  disabled={isUpdating}
+                  style={{
+                    padding: '10px 16px',
+                    backgroundColor: '#ef4444',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: isUpdating ? 'not-allowed' : 'pointer',
+                    opacity: isUpdating ? 0.6 : 1,
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    marginLeft: 'auto'
+                  }}
+                >
+                  {isUpdating ? 'Deleting...' : '✕ Delete'}
+                </button>
               </div>
             </div>
           </div>

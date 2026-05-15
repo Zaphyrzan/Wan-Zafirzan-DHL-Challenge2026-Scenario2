@@ -1,17 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
 import './Navigation.css';
 
 export function TopBar() {
   const { logout } = useAuthContext();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // simple client-side routing for now — search could route to a search page
-    console.log('Search for:', query);
+    const trimmed = query.trim();
+
+    if (!trimmed) {
+      navigate('/incidents');
+      return;
+    }
+
+    const params = new URLSearchParams();
+    params.set('q', trimmed);
+    navigate(`/incidents?${params.toString()}`);
   };
+
+  // Keep topbar input in sync when user navigates with a query string.
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const q = params.get('q') || '';
+    setQuery(q);
+  }, [location.search]);
 
   return (
     <header className="topbar">

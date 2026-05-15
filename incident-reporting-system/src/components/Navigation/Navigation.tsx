@@ -1,6 +1,6 @@
 /**
  * Navigation Component
- * Top navigation bar for the admin dashboard
+ * Left sidebar navigation for the admin dashboard
  */
 
 import { useNavigate } from 'react-router-dom';
@@ -31,42 +31,29 @@ export function Navigation() {
 
   // JSX render
   return (
-    <nav className="navigation-bar">
-      {/* Logo and branding */}
-      <div className="nav-branding">
+    <aside className="navigation-sidebar">
+      <div className="sidebar-brand">
         <div className="nav-logo">
           <span className="logo-text">DHL</span>
-          <div className="logo-separator"></div>
         </div>
-        <h1 className="nav-title">Incident System</h1>
+        <h1 className="sidebar-title">Incidents</h1>
       </div>
 
-      {/* Navigation links */}
-      <ul className="nav-links">
-        <li>
-          <button
-            className="nav-link"
-            onClick={() => handleNavigation('/')}
-            title="Dashboard"
-          >
-            Dashboard
-          </button>
-        </li>
-        <li>
-          <button
-            className="nav-link"
-            onClick={() => handleNavigation('/upload')}
-            title="Upload Incident"
-          >
-            Upload
-          </button>
-        </li>
-      </ul>
+      <nav className="sidebar-nav">
+        <button className="sidebar-item" onClick={() => handleNavigation('/')} title="Dashboard">
+          <span className="sidebar-icon">🏠</span>
+          <span className="sidebar-label">Dashboard</span>
+        </button>
 
-      {/* Logout button */}
-      <button className="nav-logout-btn" onClick={handleLogout} title="Sign out">
-        Sign Out
-      </button>
-    </nav>
+        <button className="sidebar-item" onClick={() => handleNavigation('/upload')} title="Upload">
+          <span className="sidebar-icon">⬆️</span>
+          <span className="sidebar-label">Upload</span>
+        </button>
+      </nav>
+
+      <div className="sidebar-footer">
+        <button className="signout-btn" onClick={handleLogout} title="Sign out">Sign Out</button>
+      </div>
+    </aside>
   );
 }

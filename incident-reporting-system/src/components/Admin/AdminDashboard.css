@@ -63,6 +63,19 @@
   opacity: 0.95;
 }
 
+/* Priority chart section */
+.priority-chart-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background: white;
+  border: 1px solid #EDEDED;
+  border-radius: 8px;
+}
+
+.priority-chart-legend { display: flex; gap: 12px; align-items: center; }
+
 /* Section container */
 .critical-section,
 .all-incidents-section {

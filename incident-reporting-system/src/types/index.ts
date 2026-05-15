@@ -31,6 +31,8 @@ export interface Incident {
   
   // User ID of the incident creator
   created_by: string;
+  // Optional sender information (e.g., email sender from RPA ingestion)
+  sender?: string;
   
   // User ID of the reviewer (if reviewed)
   reviewed_by?: string;

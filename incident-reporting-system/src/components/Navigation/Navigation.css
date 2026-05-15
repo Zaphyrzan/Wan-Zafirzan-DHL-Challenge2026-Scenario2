@@ -242,3 +242,104 @@
     width: 100%;
   }
 }
+
+/* Sidebar styles */
+.navigation-sidebar {
+  width: 220px;
+  height: 100vh;
+  background: #BA0C2F;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem 0.5rem;
+  box-sizing: border-box;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1rem;
+}
+
+.sidebar-title {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+}
+
+.sidebar-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.65rem 0.75rem;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.sidebar-item:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.sidebar-icon { font-size: 1.05rem; }
+
+.sidebar-footer { padding: 1rem; }
+
+.signout-btn {
+  width: 100%;
+  padding: 0.6rem;
+  border: none;
+  background: #FFCD00;
+  color: #222;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Top bar styles */
+.topbar {
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid #e6e6e6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+}
+
+.topbar-search input {
+  width: 420px;
+  max-width: 60%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.topbar-actions { display: flex; align-items: center; gap: 1rem; }
+
+.profile-btn { background: transparent; border: none; cursor: pointer; padding: 0.25rem; }
+
+.profile-menu {
+  position: absolute;
+  right: 1rem;
+  margin-top: 0.5rem;
+  background: white;
+  border: 1px solid #e6e6e6;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-radius: 6px;
+}
+
+.profile-menu-item { display: block; padding: 0.6rem 1rem; background: transparent; border: none; width: 100%; text-align: left; cursor: pointer; }
+
+/* Layout adjustments for protected layout */
+.protected-layout { display: flex; min-height: 100vh; }
+.protected-content { flex: 1; display: flex; flex-direction: column; }

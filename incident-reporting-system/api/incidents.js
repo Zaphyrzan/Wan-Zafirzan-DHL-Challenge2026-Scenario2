@@ -7,9 +7,10 @@ export default async function handler(
 ) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-api-key');
-
+      sender,
+      file_content,
+      file_name,
+      file_type
   // Preflight
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -19,7 +20,8 @@ export default async function handler(
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
     return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
-  }
+      // include sender when provided (some schemas include a sender column)
+      ...(sender ? { sender } : {}),
 
   try {
     // API key validation

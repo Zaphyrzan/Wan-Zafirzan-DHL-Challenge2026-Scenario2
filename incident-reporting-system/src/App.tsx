@@ -11,6 +11,7 @@ import { AuthGuard } from './components/Auth/AuthGuard';
 import { AdminDashboard } from './components/Admin/AdminDashboard';
 import { UploadConsole } from './components/UploadConsole/UploadConsole';
 import { Navigation } from './components/Navigation/Navigation';
+import { TopBar } from './components/Navigation/TopBar';
 import './styles/App.css';
 
 /**
@@ -27,9 +28,10 @@ function ProtectedLayout({ children }: ProtectedLayoutProps) {
     <div className="protected-layout">
       {/* Navigation bar */}
       <Navigation />
-      
+
       {/* Main content */}
       <div className="protected-content">
+        <TopBar />
         {children}
       </div>
     </div>

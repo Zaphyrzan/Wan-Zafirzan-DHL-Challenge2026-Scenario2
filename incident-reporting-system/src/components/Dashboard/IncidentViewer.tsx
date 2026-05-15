@@ -32,6 +32,8 @@ interface IncidentItem {
   created_at: string;
   // Last update time
   updated_at: string;
+  // Optional sender (email address) when incident created via RPA/email
+  sender?: string;
 }
 
 /**
@@ -450,6 +452,12 @@ export function IncidentViewer() {
                     <label>Updated</label>
                     <span>{formatDate(selectedIncident.updated_at)}</span>
                   </div>
+                    {selectedIncident.sender && (
+                      <div className="metadata-item">
+                        <label>Sender</label>
+                        <span>{selectedIncident.sender}</span>
+                      </div>
+                    )}
                   <div className="metadata-item">
                     <label>ID</label>
                     <span className="metadata-id">{selectedIncident.id.substring(0, 8)}...</span>

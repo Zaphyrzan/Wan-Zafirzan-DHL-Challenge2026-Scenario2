@@ -223,6 +223,14 @@
   transform: translateY(-2px);
 }
 
+/* Sender on card */
+.incident-card-sender {
+  margin: 0;
+  color: #9f1239;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
 /* Incident card header */
 .incident-card-header {
   /* Display flex */

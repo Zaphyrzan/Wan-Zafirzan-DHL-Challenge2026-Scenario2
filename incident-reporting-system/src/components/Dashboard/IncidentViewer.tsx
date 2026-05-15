@@ -159,6 +159,13 @@ export function IncidentViewer() {
         // Extract incidents from response (handle paginated response)
         const incidentsList = Array.isArray(data) ? data : (data as any)?.data || [];
 
+        if (import.meta.env.DEV) {
+          try {
+            console.debug('Fetched incidents (id -> sender):', incidentsList.map((i: any) => ({ id: i.id, sender: i.sender })));
+          } catch (e) {
+            /* ignore */
+          }
+        }
         // Set incidents state
         setIncidents(incidentsList);
       } catch (err: any) {
@@ -173,6 +180,12 @@ export function IncidentViewer() {
 
     // Call fetch function
     fetchIncidents();
+    if (import.meta.env.DEV) {
+      // Log incidents for debugging sender presence (fetch once more to inspect API response)
+      fetchIncidents().then(() => {
+        // no-op
+      });
+    }
   }, [userId]);
 
   /**
@@ -439,6 +452,9 @@ export function IncidentViewer() {
                   {incident.description.length > 100 ? '...' : ''}
                 </p>
               )}
+
+              {/* Sender */}
+              <p className="incident-card-sender">Sender: {incident.sender || 'Not provided'}</p>
 
               {/* Tags display */}
               {incident.tags.length > 0 && (

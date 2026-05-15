@@ -657,6 +657,27 @@ export function AdminDashboard() {
                 >
                   {selectedIncident.status.replace(/_/g, ' ').toUpperCase()}
                 </span>
+                {/* Top-right actions: Move Review button here for easier access */}
+                <div style={{ marginLeft: 12 }}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleReviewIncident}
+                    disabled={isUpdating}
+                    style={{
+                      padding: '8px 12px',
+                      backgroundColor: '#BA0C2F',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      cursor: isUpdating ? 'not-allowed' : 'pointer',
+                      opacity: isUpdating ? 0.6 : 1,
+                      fontSize: '13px',
+                      fontWeight: 600
+                    }}
+                  >
+                    Review
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -802,26 +823,7 @@ export function AdminDashboard() {
                   </span>
                 )}
                 
-                {/* Review button - opens the dedicated review page */}
-                <button
-                  className="btn btn-primary"
-                  onClick={handleReviewIncident}
-                  disabled={isUpdating}
-                  style={{
-                    padding: '10px 16px',
-                    backgroundColor: '#BA0C2F',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: isUpdating ? 'not-allowed' : 'pointer',
-                    opacity: isUpdating ? 0.6 : 1,
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    marginLeft: 'auto'
-                  }}
-                >
-                  Review
-                </button>
+                {/* Footer actions updated - Review moved to header for visibility */}
               </div>
             </div>
           </div>

@@ -187,7 +187,7 @@ function App() {
           <Route
             path="/incidents/review/:incidentId"
             element={
-              <AuthGuard requiredRole="reviewer">
+              <AuthGuard>
                 <ProtectedLayout>
                   <IncidentReviewPage />
                 </ProtectedLayout>

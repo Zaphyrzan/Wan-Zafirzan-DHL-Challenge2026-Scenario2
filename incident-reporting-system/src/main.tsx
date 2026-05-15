@@ -54,7 +54,7 @@ function rescueUI() {
       }
     });
 
-    // Hide any large fixed/sticky elements that cover the viewport and have opaque backgrounds
+    // Hide any large fixed/sticky elements that cover the viewport (more aggressive)
     const all = Array.from(document.querySelectorAll<HTMLElement>('*'));
     const hidden = [] as string[];
     all.forEach(el => {
@@ -63,11 +63,15 @@ function rescueUI() {
         const pos = cs.position;
         const zi = parseInt(cs.zIndex || '0') || 0;
         const rect = el.getBoundingClientRect();
-        const covers = rect.width >= window.innerWidth - 10 && rect.height >= window.innerHeight - 10;
-        const opaqueBg = (cs.backgroundColor && cs.backgroundColor !== 'transparent' && cs.backgroundColor !== 'rgba(0, 0, 0, 0)');
-        if ((pos === 'fixed' || pos === 'sticky' || pos === 'absolute') && zi >= 100 && covers && opaqueBg) {
+        const coversArea = rect.width >= window.innerWidth * 0.85 && rect.height >= window.innerHeight * 0.85;
+        const coversTop = rect.top <= 10 && rect.left <= 10;
+        if ((pos === 'fixed' || pos === 'sticky' || pos === 'absolute') && (zi >= 10 || coversArea || coversTop)) {
+          // Don't hide very small controls or the root
+          if (el.id === 'root' || el.id === 'diagnostic-banner') return;
+          // Hide element visually and disable pointer events
           el.style.pointerEvents = 'none';
           el.style.visibility = 'hidden';
+          el.style.opacity = '0';
           hidden.push((el.className || el.tagName).toString());
         }
       } catch (e) {}
@@ -80,6 +84,28 @@ function rescueUI() {
       diag.style.color = '#365314';
       diag.style.display = 'block';
     }
+
+    // Force main containers to be visible and above anything else
+    try {
+      const appSelectors = ['.protected-content', '.admin-dashboard', '.upload-console-container', '.incident-viewer', '.critical-section'];
+      appSelectors.forEach(sel => {
+        const el = document.querySelector<HTMLElement>(sel);
+        if (el) {
+          el.style.display = 'block';
+          el.style.visibility = 'visible';
+          el.style.opacity = '1';
+          el.style.zIndex = '9999';
+          el.style.backgroundColor = el.style.backgroundColor || '#f8f9fa';
+          el.style.color = el.style.color || '#111';
+        }
+      });
+      // Also ensure root is visible
+      const root = document.getElementById('root');
+      if (root) {
+        (root as HTMLElement).style.display = 'block';
+        (root as HTMLElement).style.visibility = 'visible';
+      }
+    } catch (e) {}
   } catch (e) {
     console.error('rescueUI error', e);
   }

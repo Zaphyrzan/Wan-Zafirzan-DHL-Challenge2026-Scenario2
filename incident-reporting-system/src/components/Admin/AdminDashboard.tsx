@@ -64,6 +64,19 @@ export function AdminDashboard() {
       // Set all incidents
       setAllIncidents(incidentsList);
 
+      // Update diagnostic banner (helps verify component mounted on deployed site)
+      try {
+        const diag = document.getElementById('diagnostic-banner');
+        if (diag) {
+          diag.textContent = `DIAGNOSTIC: AdminDashboard mounted — ${incidentsList.length} incidents loaded`;
+          diag.style.display = 'block';
+          diag.style.background = '#e6fffa';
+          diag.style.color = '#065f46';
+        }
+      } catch (e) {
+        // ignore
+      }
+
       // Filter critical and high priority incidents (for dashboard)
       const critical = incidentsList.filter(
         (inc) => inc.priority === 'critical' || inc.priority === 'high'

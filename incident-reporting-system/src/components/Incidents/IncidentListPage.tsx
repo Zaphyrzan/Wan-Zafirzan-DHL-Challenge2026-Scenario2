@@ -5,6 +5,7 @@ import type { Incident } from '../../types';
 import '../Dashboard/IncidentViewer.css';
 import '../Admin/AdminDashboard.css';
 import './IncidentListPage.css';
+import { getStatusLabelUpper } from '../../utils/status';
 
 type IncidentViewMode = 'all' | 'submitted' | 'draft' | 'resolved';
 
@@ -91,6 +92,30 @@ export function IncidentListPage({ view, title, subtitle }: IncidentListPageProp
 
     return incidents.filter((incident) => (incident.status as string) === 'published');
   }, [incidents, view]);
+
+  // Sorting options
+  const [sortOption, setSortOption] = useState<'priority_desc' | 'priority_asc' | 'date_desc' | 'date_asc'>('date_desc');
+
+  const sortedIncidents = useMemo(() => {
+    const copy = [...filteredIncidents];
+    switch (sortOption) {
+      case 'priority_desc':
+        return copy.sort((a, b) => {
+          const order: any = { critical: 4, high: 3, medium: 2, low: 1 };
+          return (order[b.priority] || 0) - (order[a.priority] || 0);
+        });
+      case 'priority_asc':
+        return copy.sort((a, b) => {
+          const order: any = { critical: 4, high: 3, medium: 2, low: 1 };
+          return (order[a.priority] || 0) - (order[b.priority] || 0);
+        });
+      case 'date_asc':
+        return copy.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+      case 'date_desc':
+      default:
+        return copy.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    }
+  }, [filteredIncidents, sortOption]);
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -207,8 +232,19 @@ export function IncidentListPage({ view, title, subtitle }: IncidentListPageProp
       ) : filteredIncidents.length === 0 ? (
         <div className="incident-list-state">No incidents found</div>
       ) : (
-        <div className="incident-list-grid">
-          {filteredIncidents.map((incident) => (
+        <div>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
+            <label style={{ fontWeight: 600 }}>Sort:</label>
+            <select value={sortOption} onChange={(e) => setSortOption(e.target.value as any)}>
+              <option value="priority_desc">Priority: High → Low</option>
+              <option value="priority_asc">Priority: Low → High</option>
+              <option value="date_desc">Date: Newest → Oldest</option>
+              <option value="date_asc">Date: Oldest → Newest</option>
+            </select>
+          </div>
+
+          <div className="incident-list-grid">
+          {sortedIncidents.map((incident) => (
             <article
               key={incident.id}
               className="incident-list-card"
@@ -243,7 +279,7 @@ export function IncidentListPage({ view, title, subtitle }: IncidentListPageProp
 
               <div className="incident-list-footer">
                 <span className={`incident-list-status incident-list-status-${incident.status}`}>
-                  {incident.status.replace(/_/g, ' ').toUpperCase()}
+                  {getStatusLabelUpper(incident.status)}
                 </span>
                 <span>{formatDate(incident.created_at)}</span>
               </div>
@@ -266,7 +302,7 @@ export function IncidentListPage({ view, title, subtitle }: IncidentListPageProp
                   {selectedIncident.priority.toUpperCase()}
                 </span>
                 <span className={`incident-list-status incident-list-status-${selectedIncident.status}`}>
-                  {selectedIncident.status.replace(/_/g, ' ').toUpperCase()}
+                  {getStatusLabelUpper(selectedIncident.status)}
                 </span>
               </div>
             </div>

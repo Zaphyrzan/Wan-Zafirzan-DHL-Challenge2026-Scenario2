@@ -4,6 +4,7 @@ import { useAuthContext } from '../../context/AuthContext';
 import { getIncidentById, updateIncident } from '../../services/incidentService';
 import { listIncidentFiles, generateSignedUrl } from '../../services/fileService';
 import type { Incident } from '../../types';
+import { getStatusLabel } from '../../utils/status';
 import './IncidentReviewPage.css';
 
 interface FileItem {
@@ -255,10 +256,10 @@ export function IncidentReviewPage() {
       ) : incident ? (
         <div className="incident-review-layout">
           <section className="incident-review-panel">
-            <div className="incident-review-panel-header">
-              <h2>Review details</h2>
-              <span className={`review-status review-status-${incident.status}`}>{incident.status.replace(/_/g, ' ')}</span>
-            </div>
+              <div className="incident-review-panel-header">
+                <h2>Review details</h2>
+                <span className={`review-status review-status-${incident.status}`}>{getStatusLabel(incident.status)}</span>
+              </div>
 
             <label className="review-field">
               <span>Priority</span>

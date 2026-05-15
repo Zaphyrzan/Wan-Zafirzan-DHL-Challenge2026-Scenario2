@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { getStatusLabelUpper } from '../../utils/status';
 import { listIncidentFiles, generateSignedUrl } from '../../services/fileService';
 import { useAuthContext } from '../../context/AuthContext';
 import * as incidentService from '../../services/incidentService';
@@ -435,7 +436,7 @@ export function IncidentViewer() {
                 <div className="incident-card-badges">
                   {/* Status badge */}
                   <span className={`badge status-badge ${getStatusColor(incident.status)}`}>
-                    {incident.status.replace('_', ' ')}
+                    {getStatusLabelUpper(incident.status)}
                   </span>
 
                   {/* Priority badge */}
@@ -497,7 +498,7 @@ export function IncidentViewer() {
                   {selectedIncident.priority.toUpperCase()}
                 </span>
                 <span className={`status-badge status-${selectedIncident.status}`}>
-                  {selectedIncident.status.replace(/_/g, ' ').toUpperCase()}
+                  {getStatusLabelUpper(selectedIncident.status)}
                 </span>
               </div>
             </div>

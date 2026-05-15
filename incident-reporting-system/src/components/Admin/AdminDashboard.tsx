@@ -11,6 +11,7 @@ import type { Incident } from '../../types';
 import '../Dashboard/IncidentViewer.css';
 import './AdminDashboard.css';
 import { PieChart } from '../Charts/PieChart';
+import { getStatusLabelUpper } from '../../utils/status';
 
 /**
  * Incident item interface - use actual Incident type from types/index.ts
@@ -526,9 +527,9 @@ export function AdminDashboard() {
                     <span className="created-date">
                       {formatDate(incident.created_at)}
                     </span>
-                    <span className={`status-badge status-${incident.status}`}>
-                      {incident.status.replace(/_/g, ' ').toUpperCase()}
-                    </span>
+                      <span className={`status-badge status-${incident.status}`}>
+                        {getStatusLabelUpper(incident.status)}
+                      </span>
                   </div>
                 </div>
               </div>
@@ -589,14 +590,12 @@ export function AdminDashboard() {
                 <div className="incident-card-header">
                   <h3 className="incident-card-title">{incident.title}</h3>
                   <div className="incident-card-badges">
-                    <span
-                      className={`priority-badge priority-${incident.priority}`}
-                    >
-                      {incident.priority.toUpperCase()}
-                    </span>
-                    <span className={`status-badge status-${incident.status}`}>
-                      {incident.status.replace(/_/g, ' ').toUpperCase()}
-                    </span>
+                      <span className={`priority-badge priority-${incident.priority}`}>
+                        {incident.priority.toUpperCase()}
+                      </span>
+                      <span className={`status-badge status-${incident.status}`}>
+                        {getStatusLabelUpper(incident.status)}
+                      </span>
                   </div>
                 </div>
 
@@ -655,7 +654,7 @@ export function AdminDashboard() {
                 <span
                   className={`status-badge status-${selectedIncident.status}`}
                 >
-                  {selectedIncident.status.replace(/_/g, ' ').toUpperCase()}
+                  {getStatusLabelUpper(selectedIncident.status)}
                 </span>
                 {/* Top-right actions: Move Review button here for easier access */}
                 <div style={{ marginLeft: 12 }}>

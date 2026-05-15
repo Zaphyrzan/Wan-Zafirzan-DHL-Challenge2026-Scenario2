@@ -189,11 +189,15 @@ export function IncidentReviewPage() {
       const updates: Partial<Incident> = {
         description: description.trim(),
         priority,
-        resolution_comments: resolutionComments.trim(),
         status: nextStatus,
         updated_at: now,
         reviewed_at: now,
       };
+
+      // Only include resolution_comments if user provided text
+      if (resolutionComments.trim()) {
+        updates.resolution_comments = resolutionComments.trim();
+      }
 
       if (userId) {
         updates.reviewed_by = userId;
@@ -211,7 +215,15 @@ export function IncidentReviewPage() {
       }
     } catch (err: any) {
       console.error('Error saving review:', err);
-      setError(err.message || 'Failed to save incident review');
+
+      const msg = String(err?.message || err);
+
+      // Detect common PostgREST / Supabase schema error for missing column
+      if (msg.toLowerCase().includes('resolution_comments') || msg.toLowerCase().includes('could not find') || msg.toLowerCase().includes('does not exist')) {
+        setError('Database schema missing `resolution_comments` column. Run the migration to add it, or save without resolution comments.');
+      } else {
+        setError(msg || 'Failed to save incident review');
+      }
     } finally {
       setIsSaving(false);
     }
@@ -278,6 +290,9 @@ export function IncidentReviewPage() {
                 disabled={isResolved}
                 placeholder="What was done to resolve this incident?"
               />
+              <div style={{ fontSize: '0.85rem', color: '#6b7280', marginTop: 6 }}>
+                Resolution comments are required when resolving an incident.
+              </div>
             </label>
 
             <div className="review-action-row">

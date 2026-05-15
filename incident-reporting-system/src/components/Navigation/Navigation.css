@@ -269,6 +269,19 @@
   margin-bottom: 2rem;
 }
 
+.dhl-logo {
+  width: 44px;
+  height: auto;
+  display: block;
+}
+
+.sidebar-subtitle {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.88);
+  font-weight: 600;
+}
+
 .sidebar-title {
   font-size: 1.2rem;
   margin: 0;
